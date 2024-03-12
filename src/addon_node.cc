@@ -4,6 +4,7 @@
 #include <node_api.h>
 
 #include "cronet_buffer.h"
+#include "cronet_consts.h"
 #include "cronet_engine_params.h"
 #include "cronet_engine.h"
 #include "cronet_error.h"
@@ -18,6 +19,8 @@
 
 napi_value create_addon(napi_env env, napi_value exports) {
   napi_status status;
+
+  CronetConsts::Register(env, exports);
 
   CronetBuffer::Register(env, exports);
   CronetEngineParams::Register(env, exports);
