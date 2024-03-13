@@ -9,6 +9,7 @@
   "author": "tengattack",
   "license": "Apache-2.0",
   "description": "Cronet's native API bindings for Node.js.",
+  "keywords": ["cronet"],
   "dependencies": {
     "cmake-js": "^7.3.0"
   },

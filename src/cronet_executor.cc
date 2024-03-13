@@ -6,6 +6,7 @@
 
 typedef struct {
   std::function<void(napi_env)> cb_;
+  // TODO: init once
   bool called_;
   std::mutex lock_;
   std::condition_variable cv_;

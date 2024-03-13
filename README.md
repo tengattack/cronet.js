@@ -16,6 +16,9 @@ const {
   CronetUrlRequest,
 } = cronetjs
 
+// dynamic load library
+CronetEngine.loadLibrary('libcronet.so')
+
 const params = new CronetEngineParams()
 params.enableQuic = true // by default
 const engine = new CronetEngine()

@@ -3,6 +3,9 @@
 
 #include <string>
 
+#ifndef LINK_CRONET
+#include <dlfcn.h>
+#endif // !LINK_CRONET
 #include <node_api.h>
 
 #include "addon_node.h"
@@ -123,3 +126,268 @@ void CronetUtil::ThrowCronetResultError(napi_env env, Cronet_RESULT result) {
 
   DCHECK(napi_throw_error(env, code.c_str(), message));
 }
+
+#ifndef LINK_CRONET
+// cronet apis
+napi_value CronetUtil::LoadLibrary(napi_env env, napi_callback_info info) {
+  napi_status status;
+
+  napi_value value;
+  if (!ValidateAndGetCbInfo(env, info, nullptr, &value, napi_string)) {
+    return nullptr;
+  }
+
+  size_t str_length, copied;
+  DCHECK(napi_get_value_string_utf8(env, value, nullptr, 0, &str_length));
+  std::string str(str_length, '\0');
+  DCHECK(napi_get_value_string_utf8(env, value, &str[0], str.length() + 1, &copied));
+
+  void* lib = dlopen(str.c_str(), RTLD_NOW);
+  if (!lib) {
+    const char* err_msg = dlerror();
+    if (!err_msg) {
+      err_msg = "Unable to load library";
+    }
+    DCHECK(napi_throw_error(env, nullptr, err_msg));
+  }
+
+  typedef struct {
+    const char* sym_name;
+    void** sym_func;
+  } CronetUtilSym;
+
+#define DECLARE_SYM(name) {"Cronet_" #name, (void**)&api_##name}
+
+  CronetUtilSym syms[] = {
+    // CronetBuffer
+    DECLARE_SYM(Buffer_Create),
+    DECLARE_SYM(Buffer_SetClientContext),
+    DECLARE_SYM(Buffer_Destroy),
+    DECLARE_SYM(Buffer_InitWithAlloc),
+    DECLARE_SYM(Buffer_GetSize),
+    DECLARE_SYM(Buffer_GetData),
+    // CronetEngineParams
+    DECLARE_SYM(EngineParams_Create),
+    DECLARE_SYM(EngineParams_Destroy),
+    DECLARE_SYM(EngineParams_enable_quic_get),
+    DECLARE_SYM(EngineParams_enable_quic_set),
+    DECLARE_SYM(EngineParams_enable_http2_get),
+    DECLARE_SYM(EngineParams_enable_http2_set),
+    DECLARE_SYM(EngineParams_enable_brotli_get),
+    DECLARE_SYM(EngineParams_enable_brotli_set),
+    DECLARE_SYM(EngineParams_user_agent_get),
+    DECLARE_SYM(EngineParams_user_agent_set),
+    DECLARE_SYM(EngineParams_experimental_options_get),
+    DECLARE_SYM(EngineParams_experimental_options_set),
+    // CronetEngine
+    DECLARE_SYM(Engine_Create),
+    DECLARE_SYM(Engine_SetClientContext),
+    DECLARE_SYM(Engine_Destroy),
+    DECLARE_SYM(Engine_GetVersionString),
+    DECLARE_SYM(Engine_StartWithParams),
+    DECLARE_SYM(Engine_Shutdown),
+    // CronetError
+    DECLARE_SYM(Error_Create),
+    DECLARE_SYM(Error_Destroy),
+    DECLARE_SYM(Error_message_get),
+    DECLARE_SYM(Error_message_set),
+    DECLARE_SYM(Error_error_code_get),
+    DECLARE_SYM(Error_error_code_set),
+    DECLARE_SYM(Error_internal_error_code_get),
+    DECLARE_SYM(Error_internal_error_code_set),
+    // CronetExecutor
+    DECLARE_SYM(Executor_CreateWith),
+    DECLARE_SYM(Executor_GetClientContext),
+    DECLARE_SYM(Executor_SetClientContext),
+    DECLARE_SYM(Executor_Destroy),
+    DECLARE_SYM(Runnable_Run),
+    DECLARE_SYM(Runnable_Destroy),
+    // CronetHttpHeader
+    DECLARE_SYM(HttpHeader_Create),
+    DECLARE_SYM(HttpHeader_Destroy),
+    DECLARE_SYM(HttpHeader_name_get),
+    DECLARE_SYM(HttpHeader_name_set),
+    DECLARE_SYM(HttpHeader_value_get),
+    DECLARE_SYM(HttpHeader_value_set),
+    // CronetUploadDataProvider
+    DECLARE_SYM(UploadDataProvider_CreateWith),
+    DECLARE_SYM(UploadDataProvider_GetClientContext),
+    DECLARE_SYM(UploadDataProvider_SetClientContext),
+    DECLARE_SYM(UploadDataProvider_Destroy),
+    // CronetUploadDataSink
+    DECLARE_SYM(UploadDataSink_Destroy),
+    DECLARE_SYM(UploadDataSink_OnReadError),
+    DECLARE_SYM(UploadDataSink_OnReadSucceeded),
+    DECLARE_SYM(UploadDataSink_OnRewindError),
+    DECLARE_SYM(UploadDataSink_OnRewindSucceeded),
+    // CronetUrlRequestCallback
+    DECLARE_SYM(UrlRequestCallback_CreateWith),
+    DECLARE_SYM(UrlRequestCallback_GetClientContext),
+    DECLARE_SYM(UrlRequestCallback_SetClientContext),
+    DECLARE_SYM(UrlRequestCallback_Destroy),
+    // CronetUrlRequestParams
+    DECLARE_SYM(UrlRequestParams_Create),
+    DECLARE_SYM(UrlRequestParams_Destroy),
+    DECLARE_SYM(UrlRequestParams_disable_cache_get),
+    DECLARE_SYM(UrlRequestParams_disable_cache_set),
+    DECLARE_SYM(UrlRequestParams_http_method_get),
+    DECLARE_SYM(UrlRequestParams_http_method_set),
+    DECLARE_SYM(UrlRequestParams_upload_data_provider_executor_set),
+    DECLARE_SYM(UrlRequestParams_upload_data_provider_set),
+    DECLARE_SYM(UrlRequestParams_request_headers_add),
+    DECLARE_SYM(UrlRequestParams_request_headers_at),
+    DECLARE_SYM(UrlRequestParams_request_headers_clear),
+    DECLARE_SYM(UrlRequestParams_request_headers_size),
+    // CronetUrlRequest
+    DECLARE_SYM(UrlRequest_Create),
+    DECLARE_SYM(UrlRequest_GetClientContext),
+    DECLARE_SYM(UrlRequest_SetClientContext),
+    DECLARE_SYM(UrlRequest_Destroy),
+    DECLARE_SYM(UrlRequest_InitWithParams),
+    DECLARE_SYM(UrlRequest_Start),
+    DECLARE_SYM(UrlRequest_Cancel),
+    DECLARE_SYM(UrlRequest_FollowRedirect),
+    DECLARE_SYM(UrlRequest_Read),
+    // CronetUrlResponseInfo
+    DECLARE_SYM(UrlResponseInfo_Create),
+    DECLARE_SYM(UrlResponseInfo_Destroy),
+    DECLARE_SYM(UrlResponseInfo_url_get),
+    DECLARE_SYM(UrlResponseInfo_url_set),
+    DECLARE_SYM(UrlResponseInfo_negotiated_protocol_get),
+    DECLARE_SYM(UrlResponseInfo_negotiated_protocol_set),
+    DECLARE_SYM(UrlResponseInfo_http_status_text_get),
+    DECLARE_SYM(UrlResponseInfo_http_status_text_set),
+    DECLARE_SYM(UrlResponseInfo_http_status_code_get),
+    DECLARE_SYM(UrlResponseInfo_http_status_code_set),
+    DECLARE_SYM(UrlResponseInfo_all_headers_list_add),
+    DECLARE_SYM(UrlResponseInfo_all_headers_list_at),
+    DECLARE_SYM(UrlResponseInfo_all_headers_list_clear),
+    DECLARE_SYM(UrlResponseInfo_all_headers_list_size),
+  };
+
+#undef DECLARE_SYM
+
+  int count = sizeof(syms) / sizeof(syms[0]);
+  void* func;
+  for (int i = 0; i < count; i++) {
+    func = dlsym(lib, syms[i].sym_name);
+    if (!func) {
+      std::string err_msg_str = "dlsym() failed on '";
+      err_msg_str += syms[i].sym_name;
+      err_msg_str + "'";
+      napi_throw_error(env, nullptr, err_msg_str.c_str());
+      return nullptr;
+    }
+    *syms[i].sym_func = func;
+  }
+
+  return nullptr;
+}
+
+#define CLAZZ_DEFINE_API_DECLTYPE(name) decltype(Cronet_##name)* CronetUtil::api_##name = nullptr
+
+// CronetBuffer
+CLAZZ_DEFINE_API_DECLTYPE(Buffer_Create);
+CLAZZ_DEFINE_API_DECLTYPE(Buffer_SetClientContext);
+CLAZZ_DEFINE_API_DECLTYPE(Buffer_Destroy);
+CLAZZ_DEFINE_API_DECLTYPE(Buffer_InitWithAlloc);
+CLAZZ_DEFINE_API_DECLTYPE(Buffer_GetSize);
+CLAZZ_DEFINE_API_DECLTYPE(Buffer_GetData);
+// CronetEngineParams
+CLAZZ_DEFINE_API_DECLTYPE(EngineParams_Create);
+CLAZZ_DEFINE_API_DECLTYPE(EngineParams_Destroy);
+CLAZZ_DEFINE_API_DECLTYPE(EngineParams_enable_quic_get);
+CLAZZ_DEFINE_API_DECLTYPE(EngineParams_enable_quic_set);
+CLAZZ_DEFINE_API_DECLTYPE(EngineParams_enable_http2_get);
+CLAZZ_DEFINE_API_DECLTYPE(EngineParams_enable_http2_set);
+CLAZZ_DEFINE_API_DECLTYPE(EngineParams_enable_brotli_get);
+CLAZZ_DEFINE_API_DECLTYPE(EngineParams_enable_brotli_set);
+CLAZZ_DEFINE_API_DECLTYPE(EngineParams_user_agent_get);
+CLAZZ_DEFINE_API_DECLTYPE(EngineParams_user_agent_set);
+CLAZZ_DEFINE_API_DECLTYPE(EngineParams_experimental_options_get);
+CLAZZ_DEFINE_API_DECLTYPE(EngineParams_experimental_options_set);
+// CronetEngine
+CLAZZ_DEFINE_API_DECLTYPE(Engine_Create);
+CLAZZ_DEFINE_API_DECLTYPE(Engine_SetClientContext);
+CLAZZ_DEFINE_API_DECLTYPE(Engine_Destroy);
+CLAZZ_DEFINE_API_DECLTYPE(Engine_GetVersionString);
+CLAZZ_DEFINE_API_DECLTYPE(Engine_StartWithParams);
+CLAZZ_DEFINE_API_DECLTYPE(Engine_Shutdown);
+// CronetError
+CLAZZ_DEFINE_API_DECLTYPE(Error_Create);
+CLAZZ_DEFINE_API_DECLTYPE(Error_Destroy);
+CLAZZ_DEFINE_API_DECLTYPE(Error_message_get);
+CLAZZ_DEFINE_API_DECLTYPE(Error_message_set);
+CLAZZ_DEFINE_API_DECLTYPE(Error_error_code_get);
+CLAZZ_DEFINE_API_DECLTYPE(Error_error_code_set);
+CLAZZ_DEFINE_API_DECLTYPE(Error_internal_error_code_get);
+CLAZZ_DEFINE_API_DECLTYPE(Error_internal_error_code_set);
+// CronetExecutor
+CLAZZ_DEFINE_API_DECLTYPE(Executor_CreateWith);
+CLAZZ_DEFINE_API_DECLTYPE(Executor_GetClientContext);
+CLAZZ_DEFINE_API_DECLTYPE(Executor_SetClientContext);
+CLAZZ_DEFINE_API_DECLTYPE(Executor_Destroy);
+CLAZZ_DEFINE_API_DECLTYPE(Runnable_Run);
+CLAZZ_DEFINE_API_DECLTYPE(Runnable_Destroy);
+// CronetHttpHeader
+CLAZZ_DEFINE_API_DECLTYPE(HttpHeader_Create);
+CLAZZ_DEFINE_API_DECLTYPE(HttpHeader_Destroy);
+CLAZZ_DEFINE_API_DECLTYPE(HttpHeader_name_get);
+CLAZZ_DEFINE_API_DECLTYPE(HttpHeader_name_set);
+CLAZZ_DEFINE_API_DECLTYPE(HttpHeader_value_get);
+CLAZZ_DEFINE_API_DECLTYPE(HttpHeader_value_set);
+// CronetUploadDataProvider
+CLAZZ_DEFINE_API_DECLTYPE(UploadDataProvider_CreateWith);
+CLAZZ_DEFINE_API_DECLTYPE(UploadDataProvider_GetClientContext);
+CLAZZ_DEFINE_API_DECLTYPE(UploadDataProvider_SetClientContext);
+CLAZZ_DEFINE_API_DECLTYPE(UploadDataProvider_Destroy);
+// CronetUploadDataSink
+CLAZZ_DEFINE_API_DECLTYPE(UploadDataSink_Destroy);
+CLAZZ_DEFINE_API_DECLTYPE(UploadDataSink_OnReadError);
+CLAZZ_DEFINE_API_DECLTYPE(UploadDataSink_OnReadSucceeded);
+CLAZZ_DEFINE_API_DECLTYPE(UploadDataSink_OnRewindError);
+CLAZZ_DEFINE_API_DECLTYPE(UploadDataSink_OnRewindSucceeded);
+// CronetUrlRequestCallback
+CLAZZ_DEFINE_API_DECLTYPE(UrlRequestCallback_CreateWith);
+CLAZZ_DEFINE_API_DECLTYPE(UrlRequestCallback_GetClientContext);
+CLAZZ_DEFINE_API_DECLTYPE(UrlRequestCallback_SetClientContext);
+CLAZZ_DEFINE_API_DECLTYPE(UrlRequestCallback_Destroy);
+// CronetUrlRequestParams
+CLAZZ_DEFINE_API_DECLTYPE(UrlRequestParams_Create);
+CLAZZ_DEFINE_API_DECLTYPE(UrlRequestParams_Destroy);
+CLAZZ_DEFINE_API_DECLTYPE(UrlRequestParams_disable_cache_get);
+CLAZZ_DEFINE_API_DECLTYPE(UrlRequestParams_disable_cache_set);
+CLAZZ_DEFINE_API_DECLTYPE(UrlRequestParams_http_method_get);
+CLAZZ_DEFINE_API_DECLTYPE(UrlRequestParams_http_method_set);
+CLAZZ_DEFINE_API_DECLTYPE(UrlRequestParams_upload_data_provider_executor_set);
+CLAZZ_DEFINE_API_DECLTYPE(UrlRequestParams_upload_data_provider_set);
+CLAZZ_DEFINE_API_DECLTYPE(UrlRequestParams_request_headers_add);
+CLAZZ_DEFINE_API_DECLTYPE(UrlRequestParams_request_headers_at);
+CLAZZ_DEFINE_API_DECLTYPE(UrlRequestParams_request_headers_clear);
+CLAZZ_DEFINE_API_DECLTYPE(UrlRequestParams_request_headers_size);
+// CronetUrlRequest
+CLAZZ_DEFINE_API_DECLTYPE(UrlRequest_Create);
+CLAZZ_DEFINE_API_DECLTYPE(UrlRequest_GetClientContext);
+CLAZZ_DEFINE_API_DECLTYPE(UrlRequest_SetClientContext);
+CLAZZ_DEFINE_API_DECLTYPE(UrlRequest_Destroy);
+CLAZZ_DEFINE_API_DECLTYPE(UrlRequest_InitWithParams);
+CLAZZ_DEFINE_API_DECLTYPE(UrlRequest_Start);
+CLAZZ_DEFINE_API_DECLTYPE(UrlRequest_Cancel);
+CLAZZ_DEFINE_API_DECLTYPE(UrlRequest_FollowRedirect);
+CLAZZ_DEFINE_API_DECLTYPE(UrlRequest_Read);
+// CronetUrlResponseInfo
+CLAZZ_DEFINE_API_DECLTYPE(UrlResponseInfo_Create);
+CLAZZ_DEFINE_API_DECLTYPE(UrlResponseInfo_Destroy);
+CLAZZ_DEFINE_API_DECLTYPE(UrlResponseInfo_url_get);
+CLAZZ_DEFINE_API_DECLTYPE(UrlResponseInfo_url_set);
+CLAZZ_DEFINE_API_DECLTYPE(UrlResponseInfo_negotiated_protocol_get);
+CLAZZ_DEFINE_API_DECLTYPE(UrlResponseInfo_negotiated_protocol_set);
+CLAZZ_DEFINE_API_DECLTYPE(UrlResponseInfo_http_status_text_get);
+CLAZZ_DEFINE_API_DECLTYPE(UrlResponseInfo_http_status_text_set);
+CLAZZ_DEFINE_API_DECLTYPE(UrlResponseInfo_http_status_code_get);
+CLAZZ_DEFINE_API_DECLTYPE(UrlResponseInfo_http_status_code_set);
+CLAZZ_DEFINE_API_DECLTYPE(UrlResponseInfo_all_headers_list_add);
+CLAZZ_DEFINE_API_DECLTYPE(UrlResponseInfo_all_headers_list_at);
+CLAZZ_DEFINE_API_DECLTYPE(UrlResponseInfo_all_headers_list_clear);
+CLAZZ_DEFINE_API_DECLTYPE(UrlResponseInfo_all_headers_list_size);
+#endif // !LINK_CRONET

@@ -36,6 +36,12 @@ napi_value CronetEngine::Register(napi_env env, napi_value exports) {
       env, "CronetEngine", NAPI_AUTO_LENGTH, New, nullptr,
       sizeof(properties) / sizeof(properties[0]), properties, &cons));
 
+#ifndef LINK_CRONET
+  napi_property_descriptor static_prop =
+      DECLARE_NAPI_METHOD("loadLibrary", CronetUtil::LoadLibrary);
+  NODE_API_CALL(env, napi_define_properties(env, cons, 1, &static_prop));
+#endif // !LINK_CRONET
+
   ref = RegisterClass(env, "CronetEngine", cons, exports);
   return exports;
 }

@@ -3,6 +3,8 @@ const cronetjs = require('../build/Release/cronetjs.node')
 
 console.log(cronetjs)
 
+cronetjs.CronetEngine.loadLibrary('libcronet.so')
+
 let params = new cronetjs.CronetEngineParams()
 let fields = []
 for (const field in params) {

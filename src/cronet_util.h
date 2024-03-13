@@ -4,6 +4,7 @@
 #include <cronet_c.h>
 #include <js_native_api_types.h>
 
+#ifdef LINK_CRONET
 // CronetBuffer
 #define _Cronet_Buffer_Create Cronet_Buffer_Create
 #define _Cronet_Buffer_SetClientContext Cronet_Buffer_SetClientContext
@@ -108,6 +109,112 @@
 #define _Cronet_UrlResponseInfo_all_headers_list_at Cronet_UrlResponseInfo_all_headers_list_at
 #define _Cronet_UrlResponseInfo_all_headers_list_clear Cronet_UrlResponseInfo_all_headers_list_clear
 #define _Cronet_UrlResponseInfo_all_headers_list_size Cronet_UrlResponseInfo_all_headers_list_size
+#else // !LINK_CRONET
+// CronetBuffer
+#define _Cronet_Buffer_Create CronetUtil::api_Buffer_Create
+#define _Cronet_Buffer_SetClientContext CronetUtil::api_Buffer_SetClientContext
+#define _Cronet_Buffer_Destroy CronetUtil::api_Buffer_Destroy
+#define _Cronet_Buffer_InitWithAlloc CronetUtil::api_Buffer_InitWithAlloc
+#define _Cronet_Buffer_GetSize CronetUtil::api_Buffer_GetSize
+#define _Cronet_Buffer_GetData CronetUtil::api_Buffer_GetData
+// CronetEngineParams
+#define _Cronet_EngineParams_Create CronetUtil::api_EngineParams_Create
+#define _Cronet_EngineParams_Destroy CronetUtil::api_EngineParams_Destroy
+#define _Cronet_EngineParams_enable_quic_get CronetUtil::api_EngineParams_enable_quic_get
+#define _Cronet_EngineParams_enable_quic_set CronetUtil::api_EngineParams_enable_quic_set
+#define _Cronet_EngineParams_enable_http2_get CronetUtil::api_EngineParams_enable_http2_get
+#define _Cronet_EngineParams_enable_http2_set CronetUtil::api_EngineParams_enable_http2_set
+#define _Cronet_EngineParams_enable_brotli_get CronetUtil::api_EngineParams_enable_brotli_get
+#define _Cronet_EngineParams_enable_brotli_set CronetUtil::api_EngineParams_enable_brotli_set
+#define _Cronet_EngineParams_user_agent_get CronetUtil::api_EngineParams_user_agent_get
+#define _Cronet_EngineParams_user_agent_set CronetUtil::api_EngineParams_user_agent_set
+#define _Cronet_EngineParams_experimental_options_get CronetUtil::api_EngineParams_experimental_options_get
+#define _Cronet_EngineParams_experimental_options_set CronetUtil::api_EngineParams_experimental_options_set
+// CronetEngine
+#define _Cronet_Engine_Create CronetUtil::api_Engine_Create
+#define _Cronet_Engine_SetClientContext CronetUtil::api_Engine_SetClientContext
+#define _Cronet_Engine_Destroy CronetUtil::api_Engine_Destroy
+#define _Cronet_Engine_GetVersionString CronetUtil::api_Engine_GetVersionString
+#define _Cronet_Engine_StartWithParams CronetUtil::api_Engine_StartWithParams
+#define _Cronet_Engine_Shutdown CronetUtil::api_Engine_Shutdown
+// CronetError
+#define _Cronet_Error_Create CronetUtil::api_Error_Create
+#define _Cronet_Error_Destroy CronetUtil::api_Error_Destroy
+#define _Cronet_Error_message_get CronetUtil::api_Error_message_get
+#define _Cronet_Error_message_set CronetUtil::api_Error_message_set
+#define _Cronet_Error_error_code_get CronetUtil::api_Error_error_code_get
+#define _Cronet_Error_error_code_set CronetUtil::api_Error_error_code_set
+#define _Cronet_Error_internal_error_code_get CronetUtil::api_Error_internal_error_code_get
+#define _Cronet_Error_internal_error_code_set CronetUtil::api_Error_internal_error_code_set
+// CronetExecutor
+#define _Cronet_Executor_CreateWith CronetUtil::api_Executor_CreateWith
+#define _Cronet_Executor_GetClientContext CronetUtil::api_Executor_GetClientContext
+#define _Cronet_Executor_SetClientContext CronetUtil::api_Executor_SetClientContext
+#define _Cronet_Executor_Destroy CronetUtil::api_Executor_Destroy
+#define _Cronet_Runnable_Run CronetUtil::api_Runnable_Run
+#define _Cronet_Runnable_Destroy CronetUtil::api_Runnable_Destroy
+// CronetHttpHeader
+#define _Cronet_HttpHeader_Create CronetUtil::api_HttpHeader_Create
+#define _Cronet_HttpHeader_Destroy CronetUtil::api_HttpHeader_Destroy
+#define _Cronet_HttpHeader_name_get CronetUtil::api_HttpHeader_name_get
+#define _Cronet_HttpHeader_name_set CronetUtil::api_HttpHeader_name_set
+#define _Cronet_HttpHeader_value_get CronetUtil::api_HttpHeader_value_get
+#define _Cronet_HttpHeader_value_set CronetUtil::api_HttpHeader_value_set
+// CronetUploadDataProvider
+#define _Cronet_UploadDataProvider_CreateWith CronetUtil::api_UploadDataProvider_CreateWith
+#define _Cronet_UploadDataProvider_GetClientContext CronetUtil::api_UploadDataProvider_GetClientContext
+#define _Cronet_UploadDataProvider_SetClientContext CronetUtil::api_UploadDataProvider_SetClientContext
+#define _Cronet_UploadDataProvider_Destroy CronetUtil::api_UploadDataProvider_Destroy
+// CronetUploadDataSink
+#define _Cronet_UploadDataSink_Destroy CronetUtil::api_UploadDataSink_Destroy
+#define _Cronet_UploadDataSink_OnReadError CronetUtil::api_UploadDataSink_OnReadError
+#define _Cronet_UploadDataSink_OnReadSucceeded CronetUtil::api_UploadDataSink_OnReadSucceeded
+#define _Cronet_UploadDataSink_OnRewindError CronetUtil::api_UploadDataSink_OnRewindError
+#define _Cronet_UploadDataSink_OnRewindSucceeded CronetUtil::api_UploadDataSink_OnRewindSucceeded
+// CronetUrlRequestCallback
+#define _Cronet_UrlRequestCallback_CreateWith CronetUtil::api_UrlRequestCallback_CreateWith
+#define _Cronet_UrlRequestCallback_GetClientContext CronetUtil::api_UrlRequestCallback_GetClientContext
+#define _Cronet_UrlRequestCallback_SetClientContext CronetUtil::api_UrlRequestCallback_SetClientContext
+#define _Cronet_UrlRequestCallback_Destroy CronetUtil::api_UrlRequestCallback_Destroy
+// CronetUrlRequestParams
+#define _Cronet_UrlRequestParams_Create CronetUtil::api_UrlRequestParams_Create
+#define _Cronet_UrlRequestParams_Destroy CronetUtil::api_UrlRequestParams_Destroy
+#define _Cronet_UrlRequestParams_disable_cache_get CronetUtil::api_UrlRequestParams_disable_cache_get
+#define _Cronet_UrlRequestParams_disable_cache_set CronetUtil::api_UrlRequestParams_disable_cache_set
+#define _Cronet_UrlRequestParams_http_method_get CronetUtil::api_UrlRequestParams_http_method_get
+#define _Cronet_UrlRequestParams_http_method_set CronetUtil::api_UrlRequestParams_http_method_set
+#define _Cronet_UrlRequestParams_upload_data_provider_executor_set CronetUtil::api_UrlRequestParams_upload_data_provider_executor_set
+#define _Cronet_UrlRequestParams_upload_data_provider_set CronetUtil::api_UrlRequestParams_upload_data_provider_set
+#define _Cronet_UrlRequestParams_request_headers_add CronetUtil::api_UrlRequestParams_request_headers_add
+#define _Cronet_UrlRequestParams_request_headers_at CronetUtil::api_UrlRequestParams_request_headers_at
+#define _Cronet_UrlRequestParams_request_headers_clear CronetUtil::api_UrlRequestParams_request_headers_clear
+#define _Cronet_UrlRequestParams_request_headers_size CronetUtil::api_UrlRequestParams_request_headers_size
+// CronetUrlRequest
+#define _Cronet_UrlRequest_Create CronetUtil::api_UrlRequest_Create
+#define _Cronet_UrlRequest_GetClientContext CronetUtil::api_UrlRequest_GetClientContext
+#define _Cronet_UrlRequest_SetClientContext CronetUtil::api_UrlRequest_SetClientContext
+#define _Cronet_UrlRequest_Destroy CronetUtil::api_UrlRequest_Destroy
+#define _Cronet_UrlRequest_InitWithParams CronetUtil::api_UrlRequest_InitWithParams
+#define _Cronet_UrlRequest_Start CronetUtil::api_UrlRequest_Start
+#define _Cronet_UrlRequest_Cancel CronetUtil::api_UrlRequest_Cancel
+#define _Cronet_UrlRequest_FollowRedirect CronetUtil::api_UrlRequest_FollowRedirect
+#define _Cronet_UrlRequest_Read CronetUtil::api_UrlRequest_Read
+// CronetUrlResponseInfo
+#define _Cronet_UrlResponseInfo_Create CronetUtil::api_UrlResponseInfo_Create
+#define _Cronet_UrlResponseInfo_Destroy CronetUtil::api_UrlResponseInfo_Destroy
+#define _Cronet_UrlResponseInfo_url_get CronetUtil::api_UrlResponseInfo_url_get
+#define _Cronet_UrlResponseInfo_url_set CronetUtil::api_UrlResponseInfo_url_set
+#define _Cronet_UrlResponseInfo_negotiated_protocol_get CronetUtil::api_UrlResponseInfo_negotiated_protocol_get
+#define _Cronet_UrlResponseInfo_negotiated_protocol_set CronetUtil::api_UrlResponseInfo_negotiated_protocol_set
+#define _Cronet_UrlResponseInfo_http_status_text_get CronetUtil::api_UrlResponseInfo_http_status_text_get
+#define _Cronet_UrlResponseInfo_http_status_text_set CronetUtil::api_UrlResponseInfo_http_status_text_set
+#define _Cronet_UrlResponseInfo_http_status_code_get CronetUtil::api_UrlResponseInfo_http_status_code_get
+#define _Cronet_UrlResponseInfo_http_status_code_set CronetUtil::api_UrlResponseInfo_http_status_code_set
+#define _Cronet_UrlResponseInfo_all_headers_list_add CronetUtil::api_UrlResponseInfo_all_headers_list_add
+#define _Cronet_UrlResponseInfo_all_headers_list_at CronetUtil::api_UrlResponseInfo_all_headers_list_at
+#define _Cronet_UrlResponseInfo_all_headers_list_clear CronetUtil::api_UrlResponseInfo_all_headers_list_clear
+#define _Cronet_UrlResponseInfo_all_headers_list_size CronetUtil::api_UrlResponseInfo_all_headers_list_size
+#endif // LINK_CRONET
 
 #define DECLARE_CLAZZ_METHOD_NAME(clazz, name, method) _Cronet_##clazz##_##name##method
 
@@ -263,6 +370,117 @@ class CronetUtil {
 
   static void ThrowInvalidArgumentError(napi_env env);
   static void ThrowCronetResultError(napi_env env, Cronet_RESULT result);
+
+#ifndef LINK_CRONET
+  // cronet apis
+  static napi_value LoadLibrary(napi_env env, napi_callback_info info);
+
+#define STATIC_DEFINE_API_DECLTYPE(name) static decltype(Cronet_##name)* api_##name
+  // CronetBuffer
+  STATIC_DEFINE_API_DECLTYPE(Buffer_Create);
+  STATIC_DEFINE_API_DECLTYPE(Buffer_SetClientContext);
+  STATIC_DEFINE_API_DECLTYPE(Buffer_Destroy);
+  STATIC_DEFINE_API_DECLTYPE(Buffer_InitWithAlloc);
+  STATIC_DEFINE_API_DECLTYPE(Buffer_GetSize);
+  STATIC_DEFINE_API_DECLTYPE(Buffer_GetData);
+  // CronetEngineParams
+  STATIC_DEFINE_API_DECLTYPE(EngineParams_Create);
+  STATIC_DEFINE_API_DECLTYPE(EngineParams_Destroy);
+  STATIC_DEFINE_API_DECLTYPE(EngineParams_enable_quic_get);
+  STATIC_DEFINE_API_DECLTYPE(EngineParams_enable_quic_set);
+  STATIC_DEFINE_API_DECLTYPE(EngineParams_enable_http2_get);
+  STATIC_DEFINE_API_DECLTYPE(EngineParams_enable_http2_set);
+  STATIC_DEFINE_API_DECLTYPE(EngineParams_enable_brotli_get);
+  STATIC_DEFINE_API_DECLTYPE(EngineParams_enable_brotli_set);
+  STATIC_DEFINE_API_DECLTYPE(EngineParams_user_agent_get);
+  STATIC_DEFINE_API_DECLTYPE(EngineParams_user_agent_set);
+  STATIC_DEFINE_API_DECLTYPE(EngineParams_experimental_options_get);
+  STATIC_DEFINE_API_DECLTYPE(EngineParams_experimental_options_set);
+  // CronetEngine
+  STATIC_DEFINE_API_DECLTYPE(Engine_Create);
+  STATIC_DEFINE_API_DECLTYPE(Engine_SetClientContext);
+  STATIC_DEFINE_API_DECLTYPE(Engine_Destroy);
+  STATIC_DEFINE_API_DECLTYPE(Engine_GetVersionString);
+  STATIC_DEFINE_API_DECLTYPE(Engine_StartWithParams);
+  STATIC_DEFINE_API_DECLTYPE(Engine_Shutdown);
+  // CronetError
+  STATIC_DEFINE_API_DECLTYPE(Error_Create);
+  STATIC_DEFINE_API_DECLTYPE(Error_Destroy);
+  STATIC_DEFINE_API_DECLTYPE(Error_message_get);
+  STATIC_DEFINE_API_DECLTYPE(Error_message_set);
+  STATIC_DEFINE_API_DECLTYPE(Error_error_code_get);
+  STATIC_DEFINE_API_DECLTYPE(Error_error_code_set);
+  STATIC_DEFINE_API_DECLTYPE(Error_internal_error_code_get);
+  STATIC_DEFINE_API_DECLTYPE(Error_internal_error_code_set);
+  // CronetExecutor
+  STATIC_DEFINE_API_DECLTYPE(Executor_CreateWith);
+  STATIC_DEFINE_API_DECLTYPE(Executor_GetClientContext);
+  STATIC_DEFINE_API_DECLTYPE(Executor_SetClientContext);
+  STATIC_DEFINE_API_DECLTYPE(Executor_Destroy);
+  STATIC_DEFINE_API_DECLTYPE(Runnable_Run);
+  STATIC_DEFINE_API_DECLTYPE(Runnable_Destroy);
+  // CronetHttpHeader
+  STATIC_DEFINE_API_DECLTYPE(HttpHeader_Create);
+  STATIC_DEFINE_API_DECLTYPE(HttpHeader_Destroy);
+  STATIC_DEFINE_API_DECLTYPE(HttpHeader_name_get);
+  STATIC_DEFINE_API_DECLTYPE(HttpHeader_name_set);
+  STATIC_DEFINE_API_DECLTYPE(HttpHeader_value_get);
+  STATIC_DEFINE_API_DECLTYPE(HttpHeader_value_set);
+  // CronetUploadDataProvider
+  STATIC_DEFINE_API_DECLTYPE(UploadDataProvider_CreateWith);
+  STATIC_DEFINE_API_DECLTYPE(UploadDataProvider_GetClientContext);
+  STATIC_DEFINE_API_DECLTYPE(UploadDataProvider_SetClientContext);
+  STATIC_DEFINE_API_DECLTYPE(UploadDataProvider_Destroy);
+  // CronetUploadDataSink
+  STATIC_DEFINE_API_DECLTYPE(UploadDataSink_Destroy);
+  STATIC_DEFINE_API_DECLTYPE(UploadDataSink_OnReadError);
+  STATIC_DEFINE_API_DECLTYPE(UploadDataSink_OnReadSucceeded);
+  STATIC_DEFINE_API_DECLTYPE(UploadDataSink_OnRewindError);
+  STATIC_DEFINE_API_DECLTYPE(UploadDataSink_OnRewindSucceeded);
+  // CronetUrlRequestCallback
+  STATIC_DEFINE_API_DECLTYPE(UrlRequestCallback_CreateWith);
+  STATIC_DEFINE_API_DECLTYPE(UrlRequestCallback_GetClientContext);
+  STATIC_DEFINE_API_DECLTYPE(UrlRequestCallback_SetClientContext);
+  STATIC_DEFINE_API_DECLTYPE(UrlRequestCallback_Destroy);
+  // CronetUrlRequestParams
+  STATIC_DEFINE_API_DECLTYPE(UrlRequestParams_Create);
+  STATIC_DEFINE_API_DECLTYPE(UrlRequestParams_Destroy);
+  STATIC_DEFINE_API_DECLTYPE(UrlRequestParams_disable_cache_get);
+  STATIC_DEFINE_API_DECLTYPE(UrlRequestParams_disable_cache_set);
+  STATIC_DEFINE_API_DECLTYPE(UrlRequestParams_http_method_get);
+  STATIC_DEFINE_API_DECLTYPE(UrlRequestParams_http_method_set);
+  STATIC_DEFINE_API_DECLTYPE(UrlRequestParams_upload_data_provider_executor_set);
+  STATIC_DEFINE_API_DECLTYPE(UrlRequestParams_upload_data_provider_set);
+  STATIC_DEFINE_API_DECLTYPE(UrlRequestParams_request_headers_add);
+  STATIC_DEFINE_API_DECLTYPE(UrlRequestParams_request_headers_at);
+  STATIC_DEFINE_API_DECLTYPE(UrlRequestParams_request_headers_clear);
+  STATIC_DEFINE_API_DECLTYPE(UrlRequestParams_request_headers_size);
+  // CronetUrlRequest
+  STATIC_DEFINE_API_DECLTYPE(UrlRequest_Create);
+  STATIC_DEFINE_API_DECLTYPE(UrlRequest_GetClientContext);
+  STATIC_DEFINE_API_DECLTYPE(UrlRequest_SetClientContext);
+  STATIC_DEFINE_API_DECLTYPE(UrlRequest_Destroy);
+  STATIC_DEFINE_API_DECLTYPE(UrlRequest_InitWithParams);
+  STATIC_DEFINE_API_DECLTYPE(UrlRequest_Start);
+  STATIC_DEFINE_API_DECLTYPE(UrlRequest_Cancel);
+  STATIC_DEFINE_API_DECLTYPE(UrlRequest_FollowRedirect);
+  STATIC_DEFINE_API_DECLTYPE(UrlRequest_Read);
+  // CronetUrlResponseInfo
+  STATIC_DEFINE_API_DECLTYPE(UrlResponseInfo_Create);
+  STATIC_DEFINE_API_DECLTYPE(UrlResponseInfo_Destroy);
+  STATIC_DEFINE_API_DECLTYPE(UrlResponseInfo_url_get);
+  STATIC_DEFINE_API_DECLTYPE(UrlResponseInfo_url_set);
+  STATIC_DEFINE_API_DECLTYPE(UrlResponseInfo_negotiated_protocol_get);
+  STATIC_DEFINE_API_DECLTYPE(UrlResponseInfo_negotiated_protocol_set);
+  STATIC_DEFINE_API_DECLTYPE(UrlResponseInfo_http_status_text_get);
+  STATIC_DEFINE_API_DECLTYPE(UrlResponseInfo_http_status_text_set);
+  STATIC_DEFINE_API_DECLTYPE(UrlResponseInfo_http_status_code_get);
+  STATIC_DEFINE_API_DECLTYPE(UrlResponseInfo_http_status_code_set);
+  STATIC_DEFINE_API_DECLTYPE(UrlResponseInfo_all_headers_list_add);
+  STATIC_DEFINE_API_DECLTYPE(UrlResponseInfo_all_headers_list_at);
+  STATIC_DEFINE_API_DECLTYPE(UrlResponseInfo_all_headers_list_clear);
+  STATIC_DEFINE_API_DECLTYPE(UrlResponseInfo_all_headers_list_size);
+#endif // !LINK_CRONET
 };
 
 #endif // _CRONET_UTIL_H_
