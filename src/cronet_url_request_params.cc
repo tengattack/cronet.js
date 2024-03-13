@@ -12,7 +12,7 @@
 #include "cronet_util.h"
 
 CronetUrlRequestParams::CronetUrlRequestParams()
-    : ptr_(Cronet_UrlRequestParams_Create())
+    : ptr_(_Cronet_UrlRequestParams_Create())
     , upload_data_provider_executor_(nullptr)
     , upload_data_provider_(nullptr)
     , upload_data_provider_executor_ref_(nullptr)
@@ -21,7 +21,7 @@ CronetUrlRequestParams::CronetUrlRequestParams()
 
 CronetUrlRequestParams::~CronetUrlRequestParams() {
   TRACE("~CronetUrlRequestParams()\n");
-  Cronet_UrlRequestParams_Destroy(ptr_);
+  _Cronet_UrlRequestParams_Destroy(ptr_);
   ptr_ = nullptr;
   if (upload_data_provider_executor_ref_) {
     napi_delete_reference(env_, upload_data_provider_executor_ref_);
@@ -144,7 +144,7 @@ napi_value CronetUrlRequestParams::set_upload_data_provider_executor(napi_env en
       DCHECK(napi_delete_reference(env, obj->upload_data_provider_executor_ref_));
       obj->upload_data_provider_executor_ref_ = nullptr;
     }
-    Cronet_UrlRequestParams_upload_data_provider_executor_set(obj->ptr_, nullptr);
+    _Cronet_UrlRequestParams_upload_data_provider_executor_set(obj->ptr_, nullptr);
     obj->upload_data_provider_executor_ = nullptr;
     return nullptr;
   }
@@ -170,7 +170,7 @@ napi_value CronetUrlRequestParams::set_upload_data_provider_executor(napi_env en
     obj->upload_data_provider_executor_ref_ = nullptr;
   }
   DCHECK(napi_create_reference(env, args[0], 1, &obj->upload_data_provider_executor_ref_));
-  Cronet_UrlRequestParams_upload_data_provider_executor_set(obj->ptr_, executor->ptr());
+  _Cronet_UrlRequestParams_upload_data_provider_executor_set(obj->ptr_, executor->ptr());
   obj->upload_data_provider_executor_ = executor;
   return nullptr;
 }
@@ -209,7 +209,7 @@ napi_value CronetUrlRequestParams::set_upload_data_provider(napi_env env, napi_c
       DCHECK(napi_delete_reference(env, obj->upload_data_provider_ref_));
       obj->upload_data_provider_ref_ = nullptr;
     }
-    Cronet_UrlRequestParams_upload_data_provider_set(obj->ptr_, nullptr);
+    _Cronet_UrlRequestParams_upload_data_provider_set(obj->ptr_, nullptr);
     obj->upload_data_provider_ = nullptr;
     return nullptr;
   }
@@ -235,7 +235,7 @@ napi_value CronetUrlRequestParams::set_upload_data_provider(napi_env env, napi_c
     obj->upload_data_provider_ref_ = nullptr;
   }
   DCHECK(napi_create_reference(env, args[0], 1, &obj->upload_data_provider_ref_));
-  Cronet_UrlRequestParams_upload_data_provider_set(obj->ptr_, upload_data_provider->ptr());
+  _Cronet_UrlRequestParams_upload_data_provider_set(obj->ptr_, upload_data_provider->ptr());
   obj->upload_data_provider_ = upload_data_provider;
   return nullptr;
 }

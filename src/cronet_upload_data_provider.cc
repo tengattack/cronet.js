@@ -10,7 +10,7 @@
 #include "cronet_util.h"
 
 CronetUploadDataProvider::CronetUploadDataProvider()
-    : ptr_(Cronet_UploadDataProvider_CreateWith(
+    : ptr_(_Cronet_UploadDataProvider_CreateWith(
           CronetUploadDataProvider::GetLength,
           CronetUploadDataProvider::Read,
           CronetUploadDataProvider::Rewind,
@@ -21,12 +21,12 @@ CronetUploadDataProvider::CronetUploadDataProvider()
     , read_ref_(nullptr)
     , rewind_ref_(nullptr)
     , close_ref_(nullptr) {
-  Cronet_UploadDataProvider_SetClientContext(ptr_, this);
+  _Cronet_UploadDataProvider_SetClientContext(ptr_, this);
 }
 
 CronetUploadDataProvider::~CronetUploadDataProvider() {
   TRACE("~CronetUploadDataProvider()\n");
-  Cronet_UploadDataProvider_Destroy(ptr_);
+  _Cronet_UploadDataProvider_Destroy(ptr_);
   ptr_ = nullptr;
   SetExecutor(nullptr);
   if (get_length_ref_) {
@@ -218,7 +218,7 @@ void CronetUploadDataProvider::Close(napi_env env) {
 CronetUploadDataProvider* CronetUploadDataProvider::GetThis(
     Cronet_UploadDataProviderPtr self) {
   return static_cast<CronetUploadDataProvider*>(
-      Cronet_UploadDataProvider_GetClientContext(self));
+      _Cronet_UploadDataProvider_GetClientContext(self));
 }
 
 /* sync */

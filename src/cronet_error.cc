@@ -7,7 +7,7 @@
 #include "cronet_util.h"
 
 CronetError::CronetError()
-    : ptr_(Cronet_Error_Create())
+    : ptr_(_Cronet_Error_Create())
     , is_owned_(true) {
 }
 
@@ -19,7 +19,7 @@ CronetError::CronetError(Cronet_ErrorPtr ptr)
 CronetError::~CronetError() {
   TRACE("~CronetError()\n");
   if (is_owned_) {
-    Cronet_Error_Destroy(ptr_);
+    _Cronet_Error_Destroy(ptr_);
   }
   ptr_ = nullptr;
 }

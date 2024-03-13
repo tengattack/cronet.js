@@ -12,17 +12,17 @@ typedef struct {
 } CallJsContext;
 
 CronetExecutor::CronetExecutor()
-    : ptr_(Cronet_Executor_CreateWith(CronetExecutor::Execute))
+    : ptr_(_Cronet_Executor_CreateWith(CronetExecutor::Execute))
     , started_(false)
     , stop_thread_loop_(false)
     , work_(nullptr)
     , tsfn_(nullptr) {
-  Cronet_Executor_SetClientContext(ptr_, this);
+  _Cronet_Executor_SetClientContext(ptr_, this);
 }
 
 CronetExecutor::~CronetExecutor() {
   TRACE("~CronetExecutor()\n");
-  Cronet_Executor_Destroy(ptr_);
+  _Cronet_Executor_Destroy(ptr_);
   ptr_ = nullptr;
 }
 
@@ -255,8 +255,8 @@ void CronetExecutor::RunTasksInQueue() {
       runnable = task_queue_.front();
       task_queue_.pop();
     }
-    Cronet_Runnable_Run(runnable);
-    Cronet_Runnable_Destroy(runnable);
+    _Cronet_Runnable_Run(runnable);
+    _Cronet_Runnable_Destroy(runnable);
   }
   // Delete remaining tasks.
   std::queue<Cronet_RunnablePtr> tasks_to_destroy;
@@ -265,7 +265,7 @@ void CronetExecutor::RunTasksInQueue() {
     tasks_to_destroy.swap(task_queue_);
   }
   while (!tasks_to_destroy.empty()) {
-    Cronet_Runnable_Destroy(tasks_to_destroy.front());
+    _Cronet_Runnable_Destroy(tasks_to_destroy.front());
     tasks_to_destroy.pop();
   }
 }
@@ -279,7 +279,7 @@ void CronetExecutor::Execute(Cronet_RunnablePtr runnable) {
     }
   }
   if (runnable) {
-    Cronet_Runnable_Destroy(runnable);
+    _Cronet_Runnable_Destroy(runnable);
   } else {
     task_available_.notify_one();
   }
@@ -299,6 +299,6 @@ void CronetExecutor::Shutdown() {
 void CronetExecutor::Execute(Cronet_ExecutorPtr self,
                              Cronet_RunnablePtr runnable) {
   auto* executor =
-      static_cast<CronetExecutor*>(Cronet_Executor_GetClientContext(self));
+      static_cast<CronetExecutor*>(_Cronet_Executor_GetClientContext(self));
   executor->Execute(runnable);
 }

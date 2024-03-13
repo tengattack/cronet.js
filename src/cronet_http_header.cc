@@ -7,7 +7,7 @@
 #include "cronet_util.h"
 
 CronetHttpHeader::CronetHttpHeader()
-    : ptr_(Cronet_HttpHeader_Create())
+    : ptr_(_Cronet_HttpHeader_Create())
     , is_owned_(true) {
 }
 
@@ -19,7 +19,7 @@ CronetHttpHeader::CronetHttpHeader(Cronet_HttpHeaderPtr ptr)
 CronetHttpHeader::~CronetHttpHeader() {
   TRACE("~CronetHttpHeader()\n");
   if (is_owned_) {
-    Cronet_HttpHeader_Destroy(ptr_);
+    _Cronet_HttpHeader_Destroy(ptr_);
   }
   ptr_ = nullptr;
 }

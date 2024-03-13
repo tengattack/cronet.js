@@ -13,13 +13,13 @@
 #include "cronet_util.h"
 
 CronetUrlRequest::CronetUrlRequest()
-    : ptr_(Cronet_UrlRequest_Create())
+    : ptr_(_Cronet_UrlRequest_Create())
     , is_owned_(true)
     , inited_(false)
     , started_(false)
     , callback_(nullptr)
     , upload_data_provider_(nullptr) {
-  Cronet_UrlRequest_SetClientContext(ptr_, this);
+  _Cronet_UrlRequest_SetClientContext(ptr_, this);
 }
 
 CronetUrlRequest::CronetUrlRequest(Cronet_UrlRequestPtr ptr)
@@ -34,7 +34,7 @@ CronetUrlRequest::CronetUrlRequest(Cronet_UrlRequestPtr ptr)
 CronetUrlRequest::~CronetUrlRequest() {
   TRACE("~CronetUrlRequest()\n");
   if (is_owned_) {
-    Cronet_UrlRequest_Destroy(ptr_);
+    _Cronet_UrlRequest_Destroy(ptr_);
   }
   ptr_ = nullptr;
   SetCallback(nullptr);
@@ -226,7 +226,7 @@ napi_value CronetUrlRequest::InitWithParams(napi_env env, napi_callback_info inf
   }
   callback->SetExecutor(executor);
 
-  Cronet_RESULT result = Cronet_UrlRequest_InitWithParams(obj->ptr_,
+  Cronet_RESULT result = _Cronet_UrlRequest_InitWithParams(obj->ptr_,
       engine->ptr(), url_str.c_str(), params->ptr(),
       callback->ptr(), executor->ptr());
   if (result == Cronet_RESULT_SUCCESS) {
@@ -269,7 +269,7 @@ napi_value CronetUrlRequest::Start(napi_env env, napi_callback_info info) {
     return nullptr;
   }
 
-  Cronet_RESULT result = Cronet_UrlRequest_Start(obj->ptr_);
+  Cronet_RESULT result = _Cronet_UrlRequest_Start(obj->ptr_);
   if (result == Cronet_RESULT_SUCCESS) {
     obj->started_ = true;
   } else {
@@ -289,7 +289,7 @@ napi_value CronetUrlRequest::Cancel(napi_env env, napi_callback_info info) {
   CronetUrlRequest* obj;
   DCHECK(napi_unwrap(env, jsthis, reinterpret_cast<void**>(&obj)));
 
-  Cronet_UrlRequest_Cancel(obj->ptr_);
+  _Cronet_UrlRequest_Cancel(obj->ptr_);
   return nullptr;
 }
 
@@ -304,7 +304,7 @@ napi_value CronetUrlRequest::FollowRedirect(napi_env env, napi_callback_info inf
   CronetUrlRequest* obj;
   DCHECK(napi_unwrap(env, jsthis, reinterpret_cast<void**>(&obj)));
 
-  Cronet_RESULT result = Cronet_UrlRequest_FollowRedirect(obj->ptr_);
+  Cronet_RESULT result = _Cronet_UrlRequest_FollowRedirect(obj->ptr_);
   if (result != Cronet_RESULT_SUCCESS) {
     CronetUtil::ThrowCronetResultError(env, result);
   }
@@ -326,7 +326,7 @@ napi_value CronetUrlRequest::Read(napi_env env, napi_callback_info info) {
   CronetBuffer *buffer;
   DCHECK(napi_unwrap(env, value, reinterpret_cast<void**>(&buffer)));
 
-  Cronet_RESULT result = Cronet_UrlRequest_Read(obj->ptr_, buffer->ptr());
+  Cronet_RESULT result = _Cronet_UrlRequest_Read(obj->ptr_, buffer->ptr());
   if (result == Cronet_RESULT_SUCCESS) {
     buffer->Unowned();
   } else {

@@ -9,12 +9,12 @@
 #include "cronet_util.h"
 
 CronetEngineParams::CronetEngineParams()
-    : ptr_(Cronet_EngineParams_Create()) {
+    : ptr_(_Cronet_EngineParams_Create()) {
 }
 
 CronetEngineParams::~CronetEngineParams() {
   TRACE("~CronetEngineParams()\n");
-  Cronet_EngineParams_Destroy(ptr_);
+  _Cronet_EngineParams_Destroy(ptr_);
   ptr_ = nullptr;
 }
 

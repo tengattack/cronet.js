@@ -6,8 +6,9 @@
 #include "cronet_util.h"
 
 CronetEngine::CronetEngine()
-    : ptr_(Cronet_Engine_Create())
+    : ptr_(_Cronet_Engine_Create())
     , started_(false) {
+  _Cronet_Engine_SetClientContext(ptr_, this);
 }
 
 CronetEngine::~CronetEngine() {
@@ -15,7 +16,7 @@ CronetEngine::~CronetEngine() {
   if (started_) {
     // TODO
   }
-  Cronet_Engine_Destroy(ptr_);
+  _Cronet_Engine_Destroy(ptr_);
   ptr_ = NULL;
 }
 
@@ -100,7 +101,7 @@ napi_value CronetEngine::GetVersionString(napi_env env, napi_callback_info info)
   DCHECK(napi_unwrap(env, jsthis, reinterpret_cast<void**>(&obj)));
 
   napi_value result;
-  DCHECK(napi_create_string_utf8(env, Cronet_Engine_GetVersionString(obj->ptr_), NAPI_AUTO_LENGTH, &result));
+  DCHECK(napi_create_string_utf8(env, _Cronet_Engine_GetVersionString(obj->ptr_), NAPI_AUTO_LENGTH, &result));
   return result;
 }
 
@@ -124,7 +125,7 @@ napi_value CronetEngine::StartWithParams(napi_env env, napi_callback_info info) 
   CronetEngineParams *params;
   DCHECK(napi_unwrap(env, value, reinterpret_cast<void**>(&params)));
 
-  Cronet_RESULT result = Cronet_Engine_StartWithParams(obj->ptr_, params->ptr());
+  Cronet_RESULT result = _Cronet_Engine_StartWithParams(obj->ptr_, params->ptr());
   if (result == Cronet_RESULT_SUCCESS) {
     obj->AddRef();
     obj->started_ = true;
@@ -150,7 +151,7 @@ napi_value CronetEngine::Shutdown(napi_env env, napi_callback_info info) {
     return nullptr;
   }
 
-  Cronet_RESULT result = Cronet_Engine_Shutdown(obj->ptr_);
+  Cronet_RESULT result = _Cronet_Engine_Shutdown(obj->ptr_);
   if (result == Cronet_RESULT_SUCCESS) {
     obj->ReleaseRef();
     obj->started_ = false;

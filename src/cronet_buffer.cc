@@ -5,9 +5,9 @@
 #include "cronet_util.h"
 
 CronetBuffer::CronetBuffer()
-    : ptr_(Cronet_Buffer_Create())
+    : ptr_(_Cronet_Buffer_Create())
     , is_owned_(true) {
-  Cronet_Buffer_SetClientContext(ptr_, this);
+  _Cronet_Buffer_SetClientContext(ptr_, this);
 }
 
 CronetBuffer::CronetBuffer(Cronet_BufferPtr ptr)
@@ -18,7 +18,7 @@ CronetBuffer::CronetBuffer(Cronet_BufferPtr ptr)
 CronetBuffer::~CronetBuffer() {
   TRACE("~CronetBuffer()\n");
   if (is_owned_) {
-    Cronet_Buffer_Destroy(ptr_);
+    _Cronet_Buffer_Destroy(ptr_);
   }
   ptr_ = nullptr;
 }
@@ -44,7 +44,7 @@ napi_value CronetBuffer::Register(napi_env env, napi_value exports) {
 }
 
 void CronetBuffer::Unowned() {
-  Cronet_Buffer_SetClientContext(ptr_, nullptr);
+  _Cronet_Buffer_SetClientContext(ptr_, nullptr);
   ptr_ = nullptr;
   is_owned_ = false;
 }
@@ -114,7 +114,7 @@ napi_value CronetBuffer::WrapOwned(napi_env env, Cronet_BufferPtr ptr) {
   CronetBuffer* obj;
   DCHECK(napi_unwrap(env, result, reinterpret_cast<void**>(&obj)));
 
-  Cronet_Buffer_SetClientContext(obj->ptr_, obj);
+  _Cronet_Buffer_SetClientContext(obj->ptr_, obj);
   obj->is_owned_ = true;
 
   return result;
@@ -134,7 +134,7 @@ napi_value CronetBuffer::GetSize(napi_env env, napi_callback_info info) {
   DCHECK(napi_unwrap(env, jsthis, reinterpret_cast<void**>(&obj)));
 
   napi_value result;
-  DCHECK(napi_create_uint32(env, static_cast<uint32_t>(Cronet_Buffer_GetSize(obj->ptr_)), &result));
+  DCHECK(napi_create_uint32(env, static_cast<uint32_t>(_Cronet_Buffer_GetSize(obj->ptr_)), &result));
   return result;
 }
 
@@ -149,8 +149,8 @@ napi_value CronetBuffer::GetData(napi_env env, napi_callback_info info) {
 
   napi_value result;
   DCHECK(napi_create_external_buffer(env,
-                                     static_cast<size_t>(Cronet_Buffer_GetSize(obj->ptr_)),
-                                     Cronet_Buffer_GetData(obj->ptr_),
+                                     static_cast<size_t>(_Cronet_Buffer_GetSize(obj->ptr_)),
+                                     _Cronet_Buffer_GetData(obj->ptr_),
                                      nullptr,
                                      nullptr,
                                      &result));
@@ -173,6 +173,6 @@ napi_value CronetBuffer::InitWithAlloc(napi_env env, napi_callback_info info) {
   DCHECK(napi_get_value_uint32(env, value, &result));
   TRACE("InitWithAlloc: %u\n", result);
 
-  Cronet_Buffer_InitWithAlloc(obj->ptr_, static_cast<uint64_t>(result));
+  _Cronet_Buffer_InitWithAlloc(obj->ptr_, static_cast<uint64_t>(result));
   return nullptr;
 }

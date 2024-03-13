@@ -14,7 +14,7 @@
 #include "cronet_util.h"
 
 CronetUrlRequestCallback::CronetUrlRequestCallback()
-    : ptr_(Cronet_UrlRequestCallback_CreateWith(
+    : ptr_(_Cronet_UrlRequestCallback_CreateWith(
           CronetUrlRequestCallback::OnRedirectReceived,
           CronetUrlRequestCallback::OnResponseStarted,
           CronetUrlRequestCallback::OnReadCompleted,
@@ -27,12 +27,12 @@ CronetUrlRequestCallback::CronetUrlRequestCallback()
     , on_succeeded_ref_(nullptr)
     , on_failed_ref_(nullptr)
     , on_canceled_ref_(nullptr) {
-  Cronet_UrlRequestCallback_SetClientContext(ptr_, this);
+  _Cronet_UrlRequestCallback_SetClientContext(ptr_, this);
 }
 
 CronetUrlRequestCallback::~CronetUrlRequestCallback() {
   TRACE("~CronetUrlRequestCallback()\n");
-  Cronet_UrlRequestCallback_Destroy(ptr_);
+  _Cronet_UrlRequestCallback_Destroy(ptr_);
   ptr_ = nullptr;
   SetExecutor(nullptr);
   if (on_redirect_received_ref_) {
@@ -175,9 +175,9 @@ void CronetUrlRequestCallback::OnResponseStarted(
     Cronet_UrlResponseInfoPtr info) {
   TRACE("OnResponseStarted called.\n");
   TRACE("HTTP %s Status %d %s\n",
-         Cronet_UrlResponseInfo_negotiated_protocol_get(info),
-         Cronet_UrlResponseInfo_http_status_code_get(info),
-         Cronet_UrlResponseInfo_http_status_text_get(info));
+        _Cronet_UrlResponseInfo_negotiated_protocol_get(info),
+        _Cronet_UrlResponseInfo_http_status_code_get(info),
+        _Cronet_UrlResponseInfo_http_status_text_get(info));
 
   if (on_response_started_ref_) {
     napi_status status;
@@ -201,7 +201,7 @@ void CronetUrlRequestCallback::OnReadCompleted(napi_env env,
                                                uint64_t bytes_read) {
   TRACE("OnReadCompleted called: %zu bytes read.\n", static_cast<size_t>(bytes_read));
   // std::string last_read_data(
-  //     reinterpret_cast<char*>(Cronet_Buffer_GetData(buffer)), bytes_read);
+  //     reinterpret_cast<char*>(_Cronet_Buffer_GetData(buffer)), bytes_read);
   // response_as_string_ += last_read_data;
 
   if (on_read_completed_ref_) {
@@ -245,8 +245,8 @@ void CronetUrlRequestCallback::OnFailed(napi_env env,
                                         Cronet_UrlRequestPtr request,
                                         Cronet_UrlResponseInfoPtr info,
                                         Cronet_ErrorPtr error) {
-  TRACE("OnFailed called: %s\n", Cronet_Error_message_get(error));
-  // last_error_message_ = Cronet_Error_message_get(error);
+  TRACE("OnFailed called: %s\n", _Cronet_Error_message_get(error));
+  // last_error_message_ = _Cronet_Error_message_get(error);
 
   if (on_failed_ref_) {
     napi_status status;
@@ -286,7 +286,7 @@ void CronetUrlRequestCallback::OnCanceled(napi_env env,
 
 void CronetUrlRequestCallback::Done(napi_env env, Cronet_UrlRequestPtr request) {
   CronetUrlRequest* ctx = static_cast<CronetUrlRequest*>(
-      Cronet_UrlRequest_GetClientContext(request));
+      _Cronet_UrlRequest_GetClientContext(request));
   if (ctx) {
     ctx->Done();
   }
@@ -296,7 +296,7 @@ void CronetUrlRequestCallback::Done(napi_env env, Cronet_UrlRequestPtr request) 
 CronetUrlRequestCallback* CronetUrlRequestCallback::GetThis(
     Cronet_UrlRequestCallbackPtr self) {
   return static_cast<CronetUrlRequestCallback*>(
-      Cronet_UrlRequestCallback_GetClientContext(self));
+      _Cronet_UrlRequestCallback_GetClientContext(self));
 }
 
 /* static */

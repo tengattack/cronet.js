@@ -19,7 +19,7 @@ CronetUploadDataSink::CronetUploadDataSink(Cronet_UploadDataSinkPtr ptr)
 CronetUploadDataSink::~CronetUploadDataSink() {
   TRACE("~CronetUploadDataSink()\n");
   if (is_owned_) {
-    Cronet_UploadDataSink_Destroy(ptr_);
+    _Cronet_UploadDataSink_Destroy(ptr_);
   }
   ptr_ = nullptr;
 }
@@ -125,7 +125,7 @@ napi_value CronetUploadDataSink::On##action##Error(napi_env env, napi_callback_i
   std::string str(str_length, '\0'); \
   DCHECK(napi_get_value_string_utf8(env, value, &str[0], str.length() + 1, &copied)); \
   \
-  Cronet_UploadDataSink_On##action##Error(obj->ptr_, str.c_str()); \
+  _Cronet_UploadDataSink_On##action##Error(obj->ptr_, str.c_str()); \
   return nullptr; \
 }
 
@@ -151,7 +151,7 @@ napi_value CronetUploadDataSink::OnReadSucceeded(napi_env env, napi_callback_inf
   bool final_chunk;
   DCHECK(napi_get_value_bool(env, args[1], &final_chunk));
 
-  Cronet_UploadDataSink_OnReadSucceeded(obj->ptr_, bytes_read, final_chunk);
+  _Cronet_UploadDataSink_OnReadSucceeded(obj->ptr_, bytes_read, final_chunk);
   return nullptr;
 }
 
@@ -168,6 +168,6 @@ napi_value CronetUploadDataSink::OnRewindSucceeded(napi_env env, napi_callback_i
   CronetUploadDataSink* obj;
   DCHECK(napi_unwrap(env, jsthis, reinterpret_cast<void**>(&obj)));
 
-  Cronet_UploadDataSink_OnRewindSucceeded(obj->ptr_);
+  _Cronet_UploadDataSink_OnRewindSucceeded(obj->ptr_);
   return nullptr;
 }

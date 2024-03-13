@@ -10,7 +10,7 @@
 #include "cronet_util.h"
 
 CronetUrlResponseInfo::CronetUrlResponseInfo()
-    : ptr_(Cronet_UrlResponseInfo_Create())
+    : ptr_(_Cronet_UrlResponseInfo_Create())
     , is_owned_(true) {
 }
 
@@ -22,7 +22,7 @@ CronetUrlResponseInfo::CronetUrlResponseInfo(Cronet_UrlResponseInfoPtr ptr)
 CronetUrlResponseInfo::~CronetUrlResponseInfo() {
   TRACE("~CronetUrlResponseInfo()\n");
   if (is_owned_) {
-    Cronet_UrlResponseInfo_Destroy(ptr_);
+    _Cronet_UrlResponseInfo_Destroy(ptr_);
   }
   ptr_ = nullptr;
 }
