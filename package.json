@@ -1,6 +1,6 @@
 {
   "name": "cronet",
-  "version": "1.0.0",
+  "version": "1.0.1-rc1",
   "main": "./lib/index.js",
   "types": "./lib/index.d.ts",
   "scripts": {
