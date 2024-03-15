@@ -66,6 +66,13 @@ export class CronetUrlRequestCallback {
   onCanceled: (request: CronetUrlRequest, info: CronetUrlResponseInfo) => void
 }
 export class CronetUrlRequestParams {
+  static REQUEST_PRIORITY: {
+    REQUEST_PRIORITY_IDLE: number
+    REQUEST_PRIORITY_LOWEST: number
+    REQUEST_PRIORITY_LOW: number
+    REQUEST_PRIORITY_MEDIUM: number
+    REQUEST_PRIORITY_HIGHEST: number
+  }
   disableCache: boolean
   httpMethod: string
   requestHeadersAdd: (header: CronetHttpHeader) => void

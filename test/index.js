@@ -68,7 +68,7 @@ function finish() {
   }, 0)
 }
 
-function newRequest(method, url, start = true) {
+function newRequest(method, url, opts = null) {
   return new Promise((resolve, reject) => {
     let urlReqParams = new CronetUrlRequestParams()
     fields = []
@@ -78,9 +78,13 @@ function newRequest(method, url, start = true) {
     console.log(urlReqParams, 'fields:', fields)
     urlReqParams.httpMethod = method
     urlReqParams.disableCache = true
+    if (opts && opts.priority) {
+      urlReqParams.priority = CronetUrlRequestParams.REQUEST_PRIORITY.REQUEST_PRIORITY_HIGHEST
+    }
     console.log({
       httpMethod: urlReqParams.httpMethod,
       disableCache: urlReqParams.disableCache,
+      priority: urlReqParams.priority,
     })
 
     let reqHeader = new CronetHttpHeader()
@@ -149,7 +153,7 @@ function newRequest(method, url, start = true) {
       console.log('Request timeout.')
       timeout = null
       urlReq.cancel()
-    }, 2000)
+    }, (opts && opts.timeout) || 2000)
 
     const done = function () {
       if (timeout) {
@@ -221,12 +225,12 @@ function newRequest(method, url, start = true) {
     urlReqParams = null
     console.log('gc now')
     global.gc()
-    if (start) {
+    if (opts && opts.noStart) {
+      done()
+    } else {
       setTimeout(function () {
         urlReq.start()
-      }, 1000)
-    } else {
-      done()
+      }, 500)
     }
   })
 }
@@ -239,7 +243,7 @@ function timeout(ms) {
 
 async function main() {
   await newRequest('POST', 'https://nodejs.org/echo')
-  await newRequest('GET', 'https://www.google.com/')
+  await newRequest('GET', 'https://www.google.com/', { priority: true })
   console.log('gc now')
   global.gc()
   await timeout(2000)
@@ -247,8 +251,8 @@ async function main() {
     newRequest('GET', 'https://www.youtube.com/'),
     newRequest('GET', 'https://www.facebook.com/'),
   ])
-  // not start
-  await newRequest('GET', 'https://nodejs.org/', false)
+  // no start
+  await newRequest('GET', 'https://nodejs.org/', { noStart: true })
   global.gc()
   await timeout(500)
   finish()

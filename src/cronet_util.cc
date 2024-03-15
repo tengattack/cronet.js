@@ -234,6 +234,8 @@ napi_value CronetUtil::LoadLibrary(napi_env env, napi_callback_info info) {
     DECLARE_SYM(UrlRequestParams_disable_cache_set),
     DECLARE_SYM(UrlRequestParams_http_method_get),
     DECLARE_SYM(UrlRequestParams_http_method_set),
+    DECLARE_SYM(UrlRequestParams_priority_get),
+    DECLARE_SYM(UrlRequestParams_priority_set),
     DECLARE_SYM(UrlRequestParams_upload_data_provider_executor_set),
     DECLARE_SYM(UrlRequestParams_upload_data_provider_set),
     DECLARE_SYM(UrlRequestParams_request_headers_add),
@@ -363,6 +365,8 @@ CLAZZ_DEFINE_API_DECLTYPE(UrlRequestParams_disable_cache_get);
 CLAZZ_DEFINE_API_DECLTYPE(UrlRequestParams_disable_cache_set);
 CLAZZ_DEFINE_API_DECLTYPE(UrlRequestParams_http_method_get);
 CLAZZ_DEFINE_API_DECLTYPE(UrlRequestParams_http_method_set);
+CLAZZ_DEFINE_API_DECLTYPE(UrlRequestParams_priority_get);
+CLAZZ_DEFINE_API_DECLTYPE(UrlRequestParams_priority_set);
 CLAZZ_DEFINE_API_DECLTYPE(UrlRequestParams_upload_data_provider_executor_set);
 CLAZZ_DEFINE_API_DECLTYPE(UrlRequestParams_upload_data_provider_set);
 CLAZZ_DEFINE_API_DECLTYPE(UrlRequestParams_request_headers_add);

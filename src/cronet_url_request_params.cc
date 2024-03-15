@@ -2,6 +2,7 @@
 #include "cronet_url_request_params.h"
 
 #include <string>
+#include <vector>
 
 #include <cronet_c.h>
 
@@ -33,12 +34,32 @@ CronetUrlRequestParams::~CronetUrlRequestParams() {
 
 DECLARE_CLAZZ_LIFECYCLE_BASE(CronetUrlRequestParams)
 
+static napi_value RegisterCronetUrlRequestParamsRequestPriority(napi_env env, napi_value exports) {
+  napi_status status;
+  napi_value obj;
+  napi_value value;
+  std::vector<napi_property_descriptor> properties;
+
+  DECLARE_CRONET_CONST(Cronet_UrlRequestParams_REQUEST_PRIORITY, REQUEST_PRIORITY_IDLE);
+  DECLARE_CRONET_CONST(Cronet_UrlRequestParams_REQUEST_PRIORITY, REQUEST_PRIORITY_LOWEST);
+  DECLARE_CRONET_CONST(Cronet_UrlRequestParams_REQUEST_PRIORITY, REQUEST_PRIORITY_LOW);
+  DECLARE_CRONET_CONST(Cronet_UrlRequestParams_REQUEST_PRIORITY, REQUEST_PRIORITY_MEDIUM);
+  DECLARE_CRONET_CONST(Cronet_UrlRequestParams_REQUEST_PRIORITY, REQUEST_PRIORITY_HIGHEST);
+
+  NODE_API_CALL(env, napi_create_object(env, &obj));
+  NODE_API_CALL(env, napi_define_properties(env, obj, properties.size(), &properties[0]));
+  NODE_API_CALL(env, napi_set_named_property(env, exports, "REQUEST_PRIORITY", obj));
+  return nullptr;
+}
+
 napi_value CronetUrlRequestParams::Register(napi_env env, napi_value exports) {
   napi_status status;
   napi_property_descriptor properties[] = {
     DECLARE_NAPI_MAGIC_METHOD("disableCache", disable_cache),
 
     DECLARE_NAPI_MAGIC_METHOD("httpMethod", http_method),
+
+    DECLARE_NAPI_MAGIC_METHOD("priority", priority),
 
     DECLARE_CLAZZ_CRONET_HEADERS_METHOD(CronetUrlRequestParams, requestHeaders),
 
@@ -50,6 +71,7 @@ napi_value CronetUrlRequestParams::Register(napi_env env, napi_value exports) {
   NODE_API_CALL(env, napi_define_class(
       env, "CronetUrlRequestParams", NAPI_AUTO_LENGTH, New, nullptr,
       sizeof(properties) / sizeof(properties[0]), properties, &cons));
+  RegisterCronetUrlRequestParamsRequestPriority(env, cons);
 
   ref = RegisterClass(env, "CronetUrlRequestParams", cons, exports);
   return exports;
@@ -109,6 +131,8 @@ napi_value CronetUrlRequestParams::New(napi_env env, napi_callback_info info) {
 DECLARE_CLAZZ_BOOL_GETTER_SETTER(UrlRequestParams, disable_cache)
 
 DECLARE_CLAZZ_STRING_GETTER_SETTER(UrlRequestParams, http_method)
+
+DECLARE_CLAZZ_INT32_GETTER_SETTER(UrlRequestParams, priority, Cronet_UrlRequestParams_REQUEST_PRIORITY)
 
 napi_value CronetUrlRequestParams::get_upload_data_provider_executor(napi_env env, napi_callback_info info) {
   napi_status status;

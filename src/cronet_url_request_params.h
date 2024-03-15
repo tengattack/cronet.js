@@ -26,6 +26,9 @@ class CronetUrlRequestParams : public NapiClass {
   // string
   DECLARE_NAPI_MAGIC_METHOD_HEADER(http_method)
 
+  // int32
+  DECLARE_NAPI_MAGIC_METHOD_HEADER(priority)
+
   DECLARE_NAPI_MAGIC_METHOD_HEADER(upload_data_provider_executor)
   DECLARE_NAPI_MAGIC_METHOD_HEADER(upload_data_provider)
 
