@@ -1,7 +1,8 @@
 {
   "name": "cronet",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "./lib/index.js",
+  "types": "./lib/index.d.ts",
   "scripts": {
     "install": "cmake-js compile",
     "test": "node --expose-gc --force-node-api-uncaught-exceptions-policy=true test"
@@ -9,12 +10,11 @@
   "author": "tengattack",
   "license": "Apache-2.0",
   "description": "Cronet's native API bindings for Node.js.",
-  "keywords": ["cronet"],
+  "keywords": ["cronet","network","quic"],
   "dependencies": {
     "cmake-js": "^7.3.0"
   },
   "binary": {
     "napi_versions": [8]
-  },
-  "types": "./lib/index.d.ts"
+  }
 }

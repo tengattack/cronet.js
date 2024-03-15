@@ -2,4 +2,9 @@
 .vscode
 build
 node_modules
-third_party
+
+*.dll
+*.pdb
+*.dylib
+*.dSYM
+*.so

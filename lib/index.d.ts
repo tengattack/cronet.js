@@ -1,5 +1,7 @@
-export class CronetBuffer /* extends Buffer */ {
+export class CronetBuffer {
   initWithAlloc: (size: number) => void
+  data: Buffer
+  size: number
 }
 export class CronetEngineParams {
   enableQuic: boolean
@@ -9,6 +11,7 @@ export class CronetEngineParams {
   experimentalOptions: string
 }
 export class CronetEngine {
+  static loadLibrary: (filename: string) => void
   versionString: string
   startWithParams: (params: CronetEngineParams) => void
 }

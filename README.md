@@ -2,11 +2,21 @@
 
 [Cronet](https://chromium.googlesource.com/chromium/src/+/refs/heads/main/components/cronet)'s native API bindings for Node.js.
 
+## Installation
+
+This native addon uses [CMake.js](https://github.com/cmake-js/cmake-js) to build when package install.
+
+So we will need to fulfill its requirements at first.
+
+```sh
+npm install cronet
+```
+
 ## Usage
 
 ```js
 const { Buffer } = require('node:buffer')
-const cronetjs = require('./build/Release/cronetjs.node')
+const cronetjs = require('cronet')
 const {
   CronetEngineParams,
   CronetEngine,

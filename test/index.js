@@ -1,11 +1,22 @@
 const { Buffer } = require('node:buffer');
-const cronetjs = require('../build/Release/cronetjs.node')
+const cronetjs = require('../lib')
+const {
+  CronetBuffer,
+  CronetHttpHeader,
+  CronetEngineParams,
+  CronetEngine,
+  CronetExecutor,
+  CronetUploadDataProvider,
+  CronetUrlRequestCallback,
+  CronetUrlRequestParams,
+  CronetUrlRequest,
+} = cronetjs
 
 console.log(cronetjs)
 
-cronetjs.CronetEngine.loadLibrary('libcronet.so')
+CronetEngine.loadLibrary('libcronet.so')
 
-let params = new cronetjs.CronetEngineParams()
+let params = new CronetEngineParams()
 let fields = []
 for (const field in params) {
   fields.push(field)
@@ -22,7 +33,7 @@ console.log({
   experimentalOptions: params.experimentalOptions,
 })
 
-const engine = new cronetjs.CronetEngine()
+const engine = new CronetEngine()
 fields = []
 for (const field in engine) {
   fields.push(field)
@@ -33,14 +44,14 @@ console.log('version: ' + engine.versionString)
 engine.startWithParams(params)
 params = null
 
-let buffer = new cronetjs.CronetBuffer()
+let buffer = new CronetBuffer()
 try {
   buffer.initWithAlloc('123')
 } catch (e) {
   console.error(e)
 }
 
-const executor = new cronetjs.CronetExecutor()
+const executor = new CronetExecutor()
 fields = []
 for (const field in executor) {
   fields.push(field)
@@ -59,7 +70,7 @@ function finish() {
 
 function newRequest(method, url, start = true) {
   return new Promise((resolve, reject) => {
-    let urlReqParams = new cronetjs.CronetUrlRequestParams()
+    let urlReqParams = new CronetUrlRequestParams()
     fields = []
     for (const field in urlReqParams) {
       fields.push(field)
@@ -72,7 +83,7 @@ function newRequest(method, url, start = true) {
       disableCache: urlReqParams.disableCache,
     })
 
-    let reqHeader = new cronetjs.CronetHttpHeader()
+    let reqHeader = new CronetHttpHeader()
     fields = []
     for (const field in reqHeader) {
       fields.push(field)
@@ -83,7 +94,7 @@ function newRequest(method, url, start = true) {
     urlReqParams.requestHeadersAdd(reqHeader)
 
     if (method === 'POST') {
-      let uploadDataProvider = new cronetjs.CronetUploadDataProvider()
+      let uploadDataProvider = new CronetUploadDataProvider()
       fields = []
       for (const field in uploadDataProvider) {
         fields.push(field)
@@ -118,7 +129,7 @@ function newRequest(method, url, start = true) {
       console.log('uploadDataProvider same?', urlReqParams.uploadDataProvider === uploadDataProvider)
     }
 
-    let urlCallback = new cronetjs.CronetUrlRequestCallback()
+    let urlCallback = new CronetUrlRequestCallback()
     fields = []
     for (const field in urlCallback) {
       fields.push(field)
@@ -127,7 +138,7 @@ function newRequest(method, url, start = true) {
 
     let body = null
 
-    let urlReq = new cronetjs.CronetUrlRequest()
+    let urlReq = new CronetUrlRequest()
     fields = []
     for (const field in urlReq) {
       fields.push(field)
@@ -170,7 +181,7 @@ function newRequest(method, url, start = true) {
         const header = info.allHeadersListAt(i)
         console.log({ name: header.name, value: header.value })
       }
-      let buffer = new cronetjs.CronetBuffer()
+      let buffer = new CronetBuffer()
       // Create and allocate 32kb buffer.
       buffer.initWithAlloc(32 * 1024)
       // Started reading the response.
