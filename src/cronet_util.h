@@ -220,6 +220,10 @@
 #define _Cronet_UrlResponseInfo_all_headers_list_size CronetUtil::api_UrlResponseInfo_all_headers_list_size
 #endif // LINK_CRONET
 
+#define DECLARE_CRONET_CONST(scope, name) \
+  DCHECK(napi_create_int32(env, static_cast<int32_t>(scope##_##name), &value)); \
+  properties.push_back({ #name, 0, 0, 0, 0, value, napi_enumerable, 0 })
+
 #define DECLARE_CLAZZ_METHOD_NAME(clazz, name, method) _Cronet_##clazz##_##name##method
 
 #define DECLARE_CLAZZ_BOOL_GETTER_SETTER(clazz, name) \

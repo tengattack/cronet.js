@@ -19,6 +19,20 @@ export class CronetEngine {
   shutdown: () => void
 }
 export class CronetError {
+  static ERROR_CODE: {
+    ERROR_CALLBACK: number
+    ERROR_HOSTNAME_NOT_RESOLVED: number
+    ERROR_INTERNET_DISCONNECTED: number
+    ERROR_NETWORK_CHANGED: number
+    ERROR_TIMED_OUT: number
+    ERROR_CONNECTION_CLOSED: number
+    ERROR_CONNECTION_TIMED_OUT: number
+    ERROR_CONNECTION_REFUSED: number
+    ERROR_CONNECTION_RESET: number
+    ERROR_ADDRESS_UNREACHABLE: number
+    ERROR_QUIC_PROTOCOL_FAILED: number
+    ERROR_OTHER: number
+  }
   message: string
   errorCode: number
   internalErrorCode: number

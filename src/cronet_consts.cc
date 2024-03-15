@@ -4,10 +4,7 @@
 #include <vector>
 
 #include "addon_node.h"
-
-#define DECLARE_CRONET_CONST(scope, name) \
-  NODE_API_CALL(env, napi_create_int32(env, static_cast<int32_t>(scope##_##name), &value)); \
-  properties.push_back({ #name, 0, 0, 0, 0, value, napi_enumerable, 0 })
+#include "cronet_util.h"
 
 static napi_value RegisterCronetResult(napi_env env, napi_value exports) {
   napi_status status;
@@ -53,33 +50,7 @@ static napi_value RegisterCronetResult(napi_env env, napi_value exports) {
   return nullptr;
 }
 
-static napi_value RegisterCronetErrorErrorCode(napi_env env, napi_value exports) {
-  napi_status status;
-  napi_value obj;
-  napi_value value;
-  std::vector<napi_property_descriptor> properties;
-
-  DECLARE_CRONET_CONST(Cronet_Error_ERROR_CODE, ERROR_CALLBACK);
-  DECLARE_CRONET_CONST(Cronet_Error_ERROR_CODE, ERROR_HOSTNAME_NOT_RESOLVED);
-  DECLARE_CRONET_CONST(Cronet_Error_ERROR_CODE, ERROR_INTERNET_DISCONNECTED);
-  DECLARE_CRONET_CONST(Cronet_Error_ERROR_CODE, ERROR_NETWORK_CHANGED);
-  DECLARE_CRONET_CONST(Cronet_Error_ERROR_CODE, ERROR_TIMED_OUT);
-  DECLARE_CRONET_CONST(Cronet_Error_ERROR_CODE, ERROR_CONNECTION_CLOSED);
-  DECLARE_CRONET_CONST(Cronet_Error_ERROR_CODE, ERROR_CONNECTION_TIMED_OUT);
-  DECLARE_CRONET_CONST(Cronet_Error_ERROR_CODE, ERROR_CONNECTION_REFUSED);
-  DECLARE_CRONET_CONST(Cronet_Error_ERROR_CODE, ERROR_CONNECTION_RESET);
-  DECLARE_CRONET_CONST(Cronet_Error_ERROR_CODE, ERROR_ADDRESS_UNREACHABLE);
-  DECLARE_CRONET_CONST(Cronet_Error_ERROR_CODE, ERROR_QUIC_PROTOCOL_FAILED);
-  DECLARE_CRONET_CONST(Cronet_Error_ERROR_CODE, ERROR_OTHER);
-
-  NODE_API_CALL(env, napi_create_object(env, &obj));
-  NODE_API_CALL(env, napi_define_properties(env, obj, properties.size(), &properties[0]));
-  NODE_API_CALL(env, napi_set_named_property(env, exports, "Cronet_Error_ERROR_CODE", obj));
-  return nullptr;
-}
-
 napi_value CronetConsts::Register(napi_env env, napi_value exports) {
   RegisterCronetResult(env, exports);
-  RegisterCronetErrorErrorCode(env, exports);
   return exports;
 }
