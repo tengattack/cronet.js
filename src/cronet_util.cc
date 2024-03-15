@@ -185,6 +185,8 @@ napi_value CronetUtil::LoadLibrary(napi_env env, napi_callback_info info) {
     DECLARE_SYM(Engine_Destroy),
     DECLARE_SYM(Engine_GetVersionString),
     DECLARE_SYM(Engine_StartWithParams),
+    DECLARE_SYM(Engine_StartNetLogToFile),
+    DECLARE_SYM(Engine_StopNetLog),
     DECLARE_SYM(Engine_Shutdown),
     // CronetError
     DECLARE_SYM(Error_Create),
@@ -312,6 +314,8 @@ CLAZZ_DEFINE_API_DECLTYPE(Engine_SetClientContext);
 CLAZZ_DEFINE_API_DECLTYPE(Engine_Destroy);
 CLAZZ_DEFINE_API_DECLTYPE(Engine_GetVersionString);
 CLAZZ_DEFINE_API_DECLTYPE(Engine_StartWithParams);
+CLAZZ_DEFINE_API_DECLTYPE(Engine_StartNetLogToFile);
+CLAZZ_DEFINE_API_DECLTYPE(Engine_StopNetLog);
 CLAZZ_DEFINE_API_DECLTYPE(Engine_Shutdown);
 // CronetError
 CLAZZ_DEFINE_API_DECLTYPE(Error_Create);

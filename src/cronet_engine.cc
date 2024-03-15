@@ -1,6 +1,8 @@
 
 #include "cronet_engine.h"
 
+#include <string>
+
 #include "addon_node.h"
 #include "cronet_engine_params.h"
 #include "cronet_util.h"
@@ -28,6 +30,8 @@ napi_value CronetEngine::Register(napi_env env, napi_value exports) {
     { "versionString", 0, 0, GetVersionString, 0, 0, napi_enumerable, 0 },
 
     DECLARE_NAPI_METHOD("startWithParams", StartWithParams),
+    DECLARE_NAPI_METHOD("startNetLogToFile", StartNetLogToFile),
+    DECLARE_NAPI_METHOD("stopNetLog", StopNetLog),
     DECLARE_NAPI_METHOD("shutdown", Shutdown),
   };
 
@@ -138,6 +142,49 @@ napi_value CronetEngine::StartWithParams(napi_env env, napi_callback_info info) 
   } else {
     CronetUtil::ThrowCronetResultError(env, result);
   }
+  return nullptr;
+}
+
+napi_value CronetEngine::StartNetLogToFile(napi_env env, napi_callback_info info) {
+  napi_status status;
+
+  size_t argc = 2;
+  napi_value args[argc];
+  napi_valuetype arg_types[] = {napi_string, napi_boolean};
+  napi_value jsthis;
+  if (!CronetUtil::ValidateAndGetCbInfo(env, info, &jsthis, argc, args, arg_types)) {
+    return nullptr;
+  }
+
+  CronetEngine* obj;
+  DCHECK(napi_unwrap(env, jsthis, reinterpret_cast<void**>(&obj)));
+
+  size_t str_length, copied;
+  DCHECK(napi_get_value_string_utf8(env, args[0], nullptr, 0, &str_length));
+  std::string filename_str(str_length, '\0');
+  DCHECK(napi_get_value_string_utf8(env, args[0], &filename_str[0], filename_str.length() + 1, &copied));
+
+  bool log_all;
+  DCHECK(napi_get_value_bool(env, args[1], &log_all));
+
+  bool ret = _Cronet_Engine_StartNetLogToFile(obj->ptr_, filename_str.c_str(), log_all);
+  napi_value result;
+  DCHECK(napi_get_boolean(env, ret, &result));
+  return result;
+}
+
+napi_value CronetEngine::StopNetLog(napi_env env, napi_callback_info info) {
+  napi_status status;
+
+  napi_value jsthis;
+  if (!CronetUtil::ValidateAndGetCbInfo(env, info, &jsthis)) {
+    return nullptr;
+  }
+
+  CronetEngine* obj;
+  DCHECK(napi_unwrap(env, jsthis, reinterpret_cast<void**>(&obj)));
+
+  _Cronet_Engine_StopNetLog(obj->ptr_);
   return nullptr;
 }
 

@@ -31,6 +31,8 @@
 #define _Cronet_Engine_Destroy Cronet_Engine_Destroy
 #define _Cronet_Engine_GetVersionString Cronet_Engine_GetVersionString
 #define _Cronet_Engine_StartWithParams Cronet_Engine_StartWithParams
+#define _Cronet_Engine_StartNetLogToFile Cronet_Engine_StartNetLogToFile
+#define _Cronet_Engine_StopNetLog Cronet_Engine_StopNetLog
 #define _Cronet_Engine_Shutdown Cronet_Engine_Shutdown
 // CronetError
 #define _Cronet_Error_Create Cronet_Error_Create
@@ -136,6 +138,8 @@
 #define _Cronet_Engine_Destroy CronetUtil::api_Engine_Destroy
 #define _Cronet_Engine_GetVersionString CronetUtil::api_Engine_GetVersionString
 #define _Cronet_Engine_StartWithParams CronetUtil::api_Engine_StartWithParams
+#define _Cronet_Engine_StartNetLogToFile CronetUtil::api_Engine_StartNetLogToFile
+#define _Cronet_Engine_StopNetLog CronetUtil::api_Engine_StopNetLog
 #define _Cronet_Engine_Shutdown CronetUtil::api_Engine_Shutdown
 // CronetError
 #define _Cronet_Error_Create CronetUtil::api_Error_Create
@@ -402,6 +406,8 @@ class CronetUtil {
   STATIC_DEFINE_API_DECLTYPE(Engine_Destroy);
   STATIC_DEFINE_API_DECLTYPE(Engine_GetVersionString);
   STATIC_DEFINE_API_DECLTYPE(Engine_StartWithParams);
+  STATIC_DEFINE_API_DECLTYPE(Engine_StartNetLogToFile);
+  STATIC_DEFINE_API_DECLTYPE(Engine_StopNetLog);
   STATIC_DEFINE_API_DECLTYPE(Engine_Shutdown);
   // CronetError
   STATIC_DEFINE_API_DECLTYPE(Error_Create);

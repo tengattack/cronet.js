@@ -18,6 +18,8 @@ class CronetEngine : public NapiClass {
 
   static napi_value GetVersionString(napi_env env, napi_callback_info info);
   static napi_value StartWithParams(napi_env env, napi_callback_info info);
+  static napi_value StartNetLogToFile(napi_env env, napi_callback_info info);
+  static napi_value StopNetLog(napi_env env, napi_callback_info info);
   static napi_value Shutdown(napi_env env, napi_callback_info info);
 
   Cronet_EnginePtr ptr_;

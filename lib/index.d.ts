@@ -14,6 +14,9 @@ export class CronetEngine {
   static loadLibrary: (filename: string) => void
   versionString: string
   startWithParams: (params: CronetEngineParams) => void
+  startNetLogToFile: (filename: string, logAll: boolean) => boolean
+  stopNetLog: () => void
+  shutdown: () => void
 }
 export class CronetError {
   message: string
