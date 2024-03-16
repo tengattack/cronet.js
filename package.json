@@ -1,8 +1,13 @@
 {
   "name": "cronet",
-  "version": "1.0.1-rc1",
+  "version": "1.0.2",
   "main": "./lib/index.js",
   "types": "./lib/index.d.ts",
+  "homepage": "https://github.com/tengattack/cronet.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tengattack/cronet.js.git"
+  },
   "scripts": {
     "install": "cmake-js compile",
     "test": "node --expose-gc --force-node-api-uncaught-exceptions-policy=true test"
