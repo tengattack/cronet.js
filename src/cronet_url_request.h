@@ -4,6 +4,7 @@
 #include <cronet_c.h>
 #include <js_native_api_types.h>
 
+#include "cronet_url_request_callback.h"
 #include "napi_class.h"
 
 class CronetUploadDataProvider;
@@ -36,9 +37,12 @@ class CronetUrlRequest : public NapiClass {
   Cronet_UrlRequestPtr ptr_;
   bool inited_;
   bool started_;
+  bool is_done_;
   // Not owned, but has ref.
   CronetUrlRequestCallback* callback_;
   CronetUploadDataProvider* upload_data_provider_;
+
+  friend class CronetUrlRequestCallback;
 };
 
 #endif // _CRONET_URL_REQUEST_H_

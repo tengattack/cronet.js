@@ -17,6 +17,7 @@ CronetUrlRequest::CronetUrlRequest()
     , is_owned_(true)
     , inited_(false)
     , started_(false)
+    , is_done_(false)
     , callback_(nullptr)
     , upload_data_provider_(nullptr) {
   _Cronet_UrlRequest_SetClientContext(ptr_, this);
@@ -86,6 +87,10 @@ void CronetUrlRequest::Done() {
   TRACE("CronetUrlRequest::Done()\n");
   SetCallback(nullptr);
   SetUploadDataProvider(nullptr);
+  if (!is_done_) {
+    ReleaseRef();
+    is_done_ = true;
+  }
 }
 
 napi_value CronetUrlRequest::New(napi_env env, napi_callback_info info) {
@@ -271,6 +276,7 @@ napi_value CronetUrlRequest::Start(napi_env env, napi_callback_info info) {
 
   Cronet_RESULT result = _Cronet_UrlRequest_Start(obj->ptr_);
   if (result == Cronet_RESULT_SUCCESS) {
+    obj->AddRef();
     obj->started_ = true;
   } else {
     CronetUtil::ThrowCronetResultError(env, result);

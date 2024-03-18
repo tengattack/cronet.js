@@ -160,9 +160,17 @@ void CronetUrlRequestCallback::OnRedirectReceived(
 
     napi_value jsthis;
     DCHECK(napi_get_reference_value(env, wrapper_, &jsthis));
+
+    napi_value jsrequest = nullptr;
+    CronetUrlRequest* ctx = static_cast<CronetUrlRequest*>(
+        _Cronet_UrlRequest_GetClientContext(request));
+    if (ctx) {
+      DCHECK(napi_get_reference_value(env, ctx->wrapper_, &jsrequest));
+    }
+
     size_t argc = 3;
     napi_value argv[argc];
-    argv[0] = CronetUrlRequest::WrapUnowned(env, request);
+    argv[0] = jsrequest;
     argv[1] = CronetUrlResponseInfo::WrapUnowned(env, info);
     DCHECK(napi_create_string_utf8(env, newLocationUrl, NAPI_AUTO_LENGTH, &argv[2]));
     DCHECK(napi_call_function(env, jsthis, cb, argc, argv, nullptr));
@@ -186,9 +194,17 @@ void CronetUrlRequestCallback::OnResponseStarted(
 
     napi_value jsthis;
     DCHECK(napi_get_reference_value(env, wrapper_, &jsthis));
+
+    napi_value jsrequest = nullptr;
+    CronetUrlRequest* ctx = static_cast<CronetUrlRequest*>(
+        _Cronet_UrlRequest_GetClientContext(request));
+    if (ctx) {
+      DCHECK(napi_get_reference_value(env, ctx->wrapper_, &jsrequest));
+    }
+
     size_t argc = 2;
     napi_value argv[argc];
-    argv[0] = CronetUrlRequest::WrapUnowned(env, request);
+    argv[0] = jsrequest;
     argv[1] = CronetUrlResponseInfo::WrapUnowned(env, info);
     DCHECK(napi_call_function(env, jsthis, cb, argc, argv, nullptr));
   }
@@ -211,9 +227,17 @@ void CronetUrlRequestCallback::OnReadCompleted(napi_env env,
 
     napi_value jsthis;
     DCHECK(napi_get_reference_value(env, wrapper_, &jsthis));
+
+    napi_value jsrequest = nullptr;
+    CronetUrlRequest* ctx = static_cast<CronetUrlRequest*>(
+        _Cronet_UrlRequest_GetClientContext(request));
+    if (ctx) {
+      DCHECK(napi_get_reference_value(env, ctx->wrapper_, &jsrequest));
+    }
+
     size_t argc = 4;
     napi_value argv[argc];
-    argv[0] = CronetUrlRequest::WrapUnowned(env, request);
+    argv[0] = jsrequest;
     argv[1] = CronetUrlResponseInfo::WrapUnowned(env, info);
     argv[2] = CronetBuffer::WrapOwned(env, buffer);
     DCHECK(napi_create_uint32(env, static_cast<uint32_t>(bytes_read), &argv[3]));
@@ -233,9 +257,17 @@ void CronetUrlRequestCallback::OnSucceeded(napi_env env,
 
     napi_value jsthis;
     DCHECK(napi_get_reference_value(env, wrapper_, &jsthis));
+
+    napi_value jsrequest = nullptr;
+    CronetUrlRequest* ctx = static_cast<CronetUrlRequest*>(
+        _Cronet_UrlRequest_GetClientContext(request));
+    if (ctx) {
+      DCHECK(napi_get_reference_value(env, ctx->wrapper_, &jsrequest));
+    }
+
     size_t argc = 2;
     napi_value argv[argc];
-    argv[0] = CronetUrlRequest::WrapUnowned(env, request);
+    argv[0] = jsrequest;
     argv[1] = CronetUrlResponseInfo::WrapUnowned(env, info);
     DCHECK(napi_call_function(env, jsthis, cb, argc, argv, nullptr));
   }
@@ -255,9 +287,17 @@ void CronetUrlRequestCallback::OnFailed(napi_env env,
 
     napi_value jsthis;
     DCHECK(napi_get_reference_value(env, wrapper_, &jsthis));
+
+    napi_value jsrequest = nullptr;
+    CronetUrlRequest* ctx = static_cast<CronetUrlRequest*>(
+        _Cronet_UrlRequest_GetClientContext(request));
+    if (ctx) {
+      DCHECK(napi_get_reference_value(env, ctx->wrapper_, &jsrequest));
+    }
+
     size_t argc = 3;
     napi_value argv[argc];
-    argv[0] = CronetUrlRequest::WrapUnowned(env, request);
+    argv[0] = jsrequest;
     argv[1] = CronetUrlResponseInfo::WrapUnowned(env, info);
     argv[2] = CronetError::WrapUnowned(env, error);
     DCHECK(napi_call_function(env, jsthis, cb, argc, argv, nullptr));
@@ -276,9 +316,17 @@ void CronetUrlRequestCallback::OnCanceled(napi_env env,
 
     napi_value jsthis;
     DCHECK(napi_get_reference_value(env, wrapper_, &jsthis));
+
+    napi_value jsrequest = nullptr;
+    CronetUrlRequest* ctx = static_cast<CronetUrlRequest*>(
+        _Cronet_UrlRequest_GetClientContext(request));
+    if (ctx) {
+      DCHECK(napi_get_reference_value(env, ctx->wrapper_, &jsrequest));
+    }
+
     size_t argc = 2;
     napi_value argv[argc];
-    argv[0] = CronetUrlRequest::WrapUnowned(env, request);
+    argv[0] = jsrequest;
     argv[1] = CronetUrlResponseInfo::WrapUnowned(env, info);
     DCHECK(napi_call_function(env, jsthis, cb, argc, argv, nullptr));
   }
