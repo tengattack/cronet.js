@@ -226,8 +226,13 @@ napi_value CronetUrlRequest::InitWithParams(napi_env env, napi_callback_info inf
   CronetExecutor *executor;
   DCHECK(napi_unwrap(env, args[4], reinterpret_cast<void**>(&executor)));
 
-  if (params->upload_data_provider_ && params->upload_data_provider_executor_) {
-    params->upload_data_provider_->SetExecutor(params->upload_data_provider_executor_);
+  if (params->upload_data_provider_) {
+    if (params->upload_data_provider_executor_) {
+      params->upload_data_provider_->SetExecutor(params->upload_data_provider_executor_);
+    } else {
+      // defaults to the request's executor
+      params->upload_data_provider_->SetExecutor(executor);
+    }
   }
   callback->SetExecutor(executor);
 
@@ -236,13 +241,13 @@ napi_value CronetUrlRequest::InitWithParams(napi_env env, napi_callback_info inf
       callback->ptr(), executor->ptr());
   if (result == Cronet_RESULT_SUCCESS) {
     obj->SetCallback(callback);
-    if (params->upload_data_provider_ && params->upload_data_provider_executor_) {
+    if (params->upload_data_provider_) {
       obj->SetUploadDataProvider(params->upload_data_provider_);
     }
     obj->inited_ = true;
   } else {
     callback->SetExecutor(nullptr);
-    if (params->upload_data_provider_ && params->upload_data_provider_executor_) {
+    if (params->upload_data_provider_) {
       params->upload_data_provider_->SetExecutor(nullptr);
     }
     CronetUtil::ThrowCronetResultError(env, result);
