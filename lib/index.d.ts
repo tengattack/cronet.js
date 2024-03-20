@@ -4,11 +4,20 @@ export class CronetBuffer {
   size: number
 }
 export class CronetEngineParams {
+  static HTTP_CACHE_MODE: {
+    DISABLED: number
+    IN_MEMORY: number
+    DISK_NO_HTTP: number
+    DISK: number
+  }
   enableQuic: boolean
   enableHttp2: boolean
   disableCache: boolean
   userAgent: string
+  storagePath: string
   experimentalOptions: string
+  httpCacheMode: number
+  httpCacheMaxSize: number
 }
 export class CronetEngine {
   static loadLibrary: (filename: string) => void

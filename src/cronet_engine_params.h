@@ -23,7 +23,14 @@ class CronetEngineParams : public NapiClass {
 
   // string
   DECLARE_NAPI_MAGIC_METHOD_HEADER(user_agent)
+  DECLARE_NAPI_MAGIC_METHOD_HEADER(storage_path)
   DECLARE_NAPI_MAGIC_METHOD_HEADER(experimental_options)
+
+  // int32
+  DECLARE_NAPI_MAGIC_METHOD_HEADER(http_cache_mode)
+
+  // int64
+  DECLARE_NAPI_MAGIC_METHOD_HEADER(http_cache_max_size)
 
   Cronet_EngineParamsPtr ptr_;
 };

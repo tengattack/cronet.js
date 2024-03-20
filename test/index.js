@@ -1,3 +1,5 @@
+const fs = require('fs');
+const path = require('path');
 const { Buffer } = require('node:buffer');
 const cronetjs = require('../lib')
 const {
@@ -14,6 +16,9 @@ const {
 
 console.log(cronetjs)
 
+const storagePath = path.join(__dirname, 'cache')
+fs.mkdirSync(storagePath, { recursive: true })
+
 CronetEngine.loadLibrary('libcronet.so')
 
 let params = new CronetEngineParams()
@@ -22,15 +27,21 @@ for (const field in params) {
   fields.push(field)
 }
 console.log(params, 'fields:', fields)
-params.enableQuic = false
+params.enableQuic = true // by default
 params.userAgent = 'CronetJS/1'
+params.storagePath = storagePath
 params.experimentalOptions = '{"QUIC":{}}'
+params.httpCacheMode = CronetEngineParams.HTTP_CACHE_MODE.DISK
+params.httpCacheMaxSize = 100_000_000
 console.log({
   enableQuic: params.enableQuic,
   enableHttp2: params.enableHttp2,
   enableBrotli: params.enableBrotli,
   userAgent: params.userAgent,
+  storagePath: params.storagePath,
   experimentalOptions: params.experimentalOptions,
+  httpCacheMode: params.httpCacheMode,
+  httpCacheMaxSize: params.httpCacheMaxSize,
 })
 
 const engine = new CronetEngine()
@@ -77,7 +88,9 @@ function newRequest(method, url, opts = null) {
     }
     console.log(urlReqParams, 'fields:', fields)
     urlReqParams.httpMethod = method
-    urlReqParams.disableCache = true
+    if (opts && opts.disableCache) {
+      urlReqParams.disableCache = true
+    }
     if (opts && opts.priority) {
       urlReqParams.priority = CronetUrlRequestParams.REQUEST_PRIORITY.REQUEST_PRIORITY_HIGHEST
     }
@@ -243,12 +256,18 @@ function timeout(ms) {
 
 async function main() {
   await newRequest('POST', 'https://nodejs.org/echo')
-  await newRequest('GET', 'https://www.google.com/', { priority: true })
+  console.log('gc now')
+  global.gc()
+  await timeout(1000)
+  await Promise.all([
+    newRequest('GET', 'https://github.com/favicon.ico'),
+    newRequest('GET', 'https://www.google.com/', { priority: true }),
+  ])
   console.log('gc now')
   global.gc()
   await timeout(2000)
   await Promise.all([
-    newRequest('GET', 'https://www.youtube.com/'),
+    newRequest('GET', 'https://www.youtube.com/', { disableCache: true }),
     newRequest('GET', 'https://www.facebook.com/'),
   ])
   // no start

@@ -177,8 +177,14 @@ napi_value CronetUtil::LoadLibrary(napi_env env, napi_callback_info info) {
     DECLARE_SYM(EngineParams_enable_brotli_set),
     DECLARE_SYM(EngineParams_user_agent_get),
     DECLARE_SYM(EngineParams_user_agent_set),
+    DECLARE_SYM(EngineParams_storage_path_get),
+    DECLARE_SYM(EngineParams_storage_path_set),
     DECLARE_SYM(EngineParams_experimental_options_get),
     DECLARE_SYM(EngineParams_experimental_options_set),
+    DECLARE_SYM(EngineParams_http_cache_mode_get),
+    DECLARE_SYM(EngineParams_http_cache_mode_set),
+    DECLARE_SYM(EngineParams_http_cache_max_size_get),
+    DECLARE_SYM(EngineParams_http_cache_max_size_set),
     // CronetEngine
     DECLARE_SYM(Engine_Create),
     DECLARE_SYM(Engine_SetClientContext),
@@ -308,8 +314,14 @@ CLAZZ_DEFINE_API_DECLTYPE(EngineParams_enable_brotli_get);
 CLAZZ_DEFINE_API_DECLTYPE(EngineParams_enable_brotli_set);
 CLAZZ_DEFINE_API_DECLTYPE(EngineParams_user_agent_get);
 CLAZZ_DEFINE_API_DECLTYPE(EngineParams_user_agent_set);
+CLAZZ_DEFINE_API_DECLTYPE(EngineParams_storage_path_get);
+CLAZZ_DEFINE_API_DECLTYPE(EngineParams_storage_path_set);
 CLAZZ_DEFINE_API_DECLTYPE(EngineParams_experimental_options_get);
 CLAZZ_DEFINE_API_DECLTYPE(EngineParams_experimental_options_set);
+CLAZZ_DEFINE_API_DECLTYPE(EngineParams_http_cache_mode_get);
+CLAZZ_DEFINE_API_DECLTYPE(EngineParams_http_cache_mode_set);
+CLAZZ_DEFINE_API_DECLTYPE(EngineParams_http_cache_max_size_get);
+CLAZZ_DEFINE_API_DECLTYPE(EngineParams_http_cache_max_size_set);
 // CronetEngine
 CLAZZ_DEFINE_API_DECLTYPE(Engine_Create);
 CLAZZ_DEFINE_API_DECLTYPE(Engine_SetClientContext);

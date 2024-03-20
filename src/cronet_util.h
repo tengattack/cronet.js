@@ -23,8 +23,14 @@
 #define _Cronet_EngineParams_enable_brotli_set Cronet_EngineParams_enable_brotli_set
 #define _Cronet_EngineParams_user_agent_get Cronet_EngineParams_user_agent_get
 #define _Cronet_EngineParams_user_agent_set Cronet_EngineParams_user_agent_set
+#define _Cronet_EngineParams_storage_path_get Cronet_EngineParams_storage_path_get
+#define _Cronet_EngineParams_storage_path_set Cronet_EngineParams_storage_path_set
 #define _Cronet_EngineParams_experimental_options_get Cronet_EngineParams_experimental_options_get
 #define _Cronet_EngineParams_experimental_options_set Cronet_EngineParams_experimental_options_set
+#define _Cronet_EngineParams_http_cache_mode_get Cronet_EngineParams_http_cache_mode_get
+#define _Cronet_EngineParams_http_cache_mode_set Cronet_EngineParams_http_cache_mode_set
+#define _Cronet_EngineParams_http_cache_max_size_get Cronet_EngineParams_http_cache_max_size_get
+#define _Cronet_EngineParams_http_cache_max_size_set Cronet_EngineParams_http_cache_max_size_set
 // CronetEngine
 #define _Cronet_Engine_Create Cronet_Engine_Create
 #define _Cronet_Engine_SetClientContext Cronet_Engine_SetClientContext
@@ -132,8 +138,14 @@
 #define _Cronet_EngineParams_enable_brotli_set CronetUtil::api_EngineParams_enable_brotli_set
 #define _Cronet_EngineParams_user_agent_get CronetUtil::api_EngineParams_user_agent_get
 #define _Cronet_EngineParams_user_agent_set CronetUtil::api_EngineParams_user_agent_set
+#define _Cronet_EngineParams_storage_path_get CronetUtil::api_EngineParams_storage_path_get
+#define _Cronet_EngineParams_storage_path_set CronetUtil::api_EngineParams_storage_path_set
 #define _Cronet_EngineParams_experimental_options_get CronetUtil::api_EngineParams_experimental_options_get
 #define _Cronet_EngineParams_experimental_options_set CronetUtil::api_EngineParams_experimental_options_set
+#define _Cronet_EngineParams_http_cache_mode_get CronetUtil::api_EngineParams_http_cache_mode_get
+#define _Cronet_EngineParams_http_cache_mode_set CronetUtil::api_EngineParams_http_cache_mode_set
+#define _Cronet_EngineParams_http_cache_max_size_get CronetUtil::api_EngineParams_http_cache_max_size_get
+#define _Cronet_EngineParams_http_cache_max_size_set CronetUtil::api_EngineParams_http_cache_max_size_set
 // CronetEngine
 #define _Cronet_Engine_Create CronetUtil::api_Engine_Create
 #define _Cronet_Engine_SetClientContext CronetUtil::api_Engine_SetClientContext
@@ -334,6 +346,40 @@ napi_value Cronet##clazz::set_##name(napi_env env, napi_callback_info info) { \
   return nullptr; \
 }
 
+#define DECLARE_CLAZZ_INT64_GETTER_SETTER(clazz, name) \
+napi_value Cronet##clazz::get_##name(napi_env env, napi_callback_info info) { \
+  napi_status status; \
+  \
+  napi_value jsthis; \
+  if (!CronetUtil::ValidateAndGetCbInfo(env, info, &jsthis)) { \
+    return nullptr; \
+  } \
+  \
+  Cronet##clazz* obj; \
+  DCHECK(napi_unwrap(env, jsthis, reinterpret_cast<void**>(&obj))); \
+  \
+  napi_value result; \
+  DCHECK(napi_create_int64(env, DECLARE_CLAZZ_METHOD_NAME(clazz, name, _get)(obj->ptr_), &result)); \
+  return result; \
+} \
+napi_value Cronet##clazz::set_##name(napi_env env, napi_callback_info info) { \
+  napi_status status; \
+  \
+  napi_value value; \
+  napi_value jsthis; \
+  if (!CronetUtil::ValidateAndGetCbInfo(env, info, &jsthis, &value, napi_number)) { \
+    return nullptr; \
+  } \
+  \
+  Cronet##clazz* obj; \
+  DCHECK(napi_unwrap(env, jsthis, reinterpret_cast<void**>(&obj))); \
+  \
+  int64_t result; \
+  DCHECK(napi_get_value_int64(env, value, &result)); \
+  DECLARE_CLAZZ_METHOD_NAME(clazz, name, _set)(obj->ptr_, result); \
+  return nullptr; \
+}
+
 #define DECLARE_REF_NAME(name, suffix) name##suffix
 
 #define DECLARE_CLAZZ_FUNC_GETTER_SETTER(clazz, name) \
@@ -406,8 +452,14 @@ class CronetUtil {
   STATIC_DEFINE_API_DECLTYPE(EngineParams_enable_brotli_set);
   STATIC_DEFINE_API_DECLTYPE(EngineParams_user_agent_get);
   STATIC_DEFINE_API_DECLTYPE(EngineParams_user_agent_set);
+  STATIC_DEFINE_API_DECLTYPE(EngineParams_storage_path_get);
+  STATIC_DEFINE_API_DECLTYPE(EngineParams_storage_path_set);
   STATIC_DEFINE_API_DECLTYPE(EngineParams_experimental_options_get);
   STATIC_DEFINE_API_DECLTYPE(EngineParams_experimental_options_set);
+  STATIC_DEFINE_API_DECLTYPE(EngineParams_http_cache_mode_get);
+  STATIC_DEFINE_API_DECLTYPE(EngineParams_http_cache_mode_set);
+  STATIC_DEFINE_API_DECLTYPE(EngineParams_http_cache_max_size_get);
+  STATIC_DEFINE_API_DECLTYPE(EngineParams_http_cache_max_size_set);
   // CronetEngine
   STATIC_DEFINE_API_DECLTYPE(Engine_Create);
   STATIC_DEFINE_API_DECLTYPE(Engine_SetClientContext);
