@@ -182,7 +182,7 @@ void CronetExecutor::CallInJs(std::function<void(napi_env)> cb) {
                                        ctx,
                                        napi_tsfn_blocking));
 
-  std::unique_lock<std::mutex> lock(lock_);
+  std::unique_lock<std::mutex> lock(ctx->lock_);
   while (!ctx->called_)
     ctx->cv_.wait(lock);
   delete ctx;
