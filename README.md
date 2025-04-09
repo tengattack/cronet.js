@@ -92,7 +92,7 @@ function newRequest(url, timeout = 2000) {
       console.log('onReadCompleted, bytes read: ' + bytesRead)
       const bytes = buffer.data.slice(0, bytesRead)
       if (!body) {
-        body = Buffer.from(bytes)
+        body = Buffer.from(new Uint8Array(bytes)) // copy data
       } else {
         body = Buffer.concat([body, bytes])
       }

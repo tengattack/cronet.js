@@ -213,7 +213,7 @@ function newRequest(method, url, opts = null) {
       const bytes = buffer.data.slice(0, bytesRead)
       console.log(buffer, fields, 'size: ' + buffer.size + ', bytes:', bytes)
       if (!body) {
-        body = Buffer.from(bytes)
+        body = Buffer.from(new Uint8Array(bytes)) // copy data
       } else {
         body = Buffer.concat([body, bytes])
       }

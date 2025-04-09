@@ -89,7 +89,7 @@ export class CronetUrlRequestParams {
   requestHeadersClear: () => void
   requestHeadersSize: () => number
   uploadDataProviderExecutor: CronetExecutor
-  uploadDataProviderProvider: CronetUploadDataProvider
+  uploadDataProvider: CronetUploadDataProvider
 }
 export class CronetUrlRequest {
   initWithParams: (engine: CronetEngine, url: string, params: CronetUrlRequestParams, callback: CronetUrlRequestCallback, executor: CronetExecutor) => void
