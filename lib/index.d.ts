@@ -1,6 +1,6 @@
 export class CronetBuffer {
   initWithAlloc: (size: number) => void
-  data: Buffer
+  data: ArrayBuffer
   size: number
 }
 export class CronetEngineParams {

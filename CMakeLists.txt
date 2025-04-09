@@ -12,7 +12,7 @@ endif()
 
 project(cronetjs)
 
-option(LINK_CRONET "Direct link the cronet library" OFF)
+option(LINK_CRONET "Direct link the cronet library" ON)
 
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 set(CMAKE_C_VISIBILITY_PRESET hidden)
@@ -34,6 +34,10 @@ if(CMAKE_BUILD_TYPE STREQUAL "Debug")
   add_definitions(-D_DEBUG)
 endif()
 
+if(LINK_CRONET)
+  add_definitions(-DLINK_CRONET)
+endif()
+
 include_directories(${CMAKE_JS_INC} "${CMAKE_CURRENT_SOURCE_DIR}/third_party/cronet/include")
 
 if(WIN32)
@@ -42,16 +46,41 @@ endif()
 
 file(GLOB SOURCE_FILES "src/*.cc")
 
-add_library(${PROJECT_NAME} SHARED ${SOURCE_FILES} ${CMAKE_JS_SRC})
-set_target_properties(${PROJECT_NAME} PROPERTIES CXX_STANDARD 17)
-set_target_properties(${PROJECT_NAME} PROPERTIES PREFIX "" SUFFIX ".node")
-target_link_libraries(${PROJECT_NAME} ${CMAKE_JS_LIB})
-if(LINK_CRONET)
-  target_link_directories(${PROJECT_NAME} "${CMAKE_CURRENT_SOURCE_DIR}/third_party/cronet/lib")
-  target_link_libraries(${PROJECT_NAME} "cronet")
-endif()
+find_library(
+    # Sets the name of the path variable.
+    hilog-lib
+    # Specifies the name of the NDK library that
+    # you want CMake to locate.
+    hilog_ndk.z
+)
 
-if(MSVC AND CMAKE_JS_NODELIB_DEF AND CMAKE_JS_NODELIB_TARGET)
-  # Generate node.lib
-  execute_process(COMMAND ${CMAKE_AR} /def:${CMAKE_JS_NODELIB_DEF} /out:${CMAKE_JS_NODELIB_TARGET} ${CMAKE_STATIC_LINKER_FLAGS})
+find_library(
+    # Sets the name of the path variable.
+    libace-lib
+    # Specifies the name of the NDK library that
+    # you want CMake to locate.
+    ace_ndk.z
+)
+
+find_library(
+    # Sets the name of the path variable.
+    libnapi-lib
+    # Specifies the name of the NDK library that
+    # you want CMake to locate.
+    ace_napi.z
+)
+
+find_library(
+    # Sets the name of the path variable.
+    libuv-lib
+    # Specifies the name of the NDK library that
+    # you want CMake to locate.
+    uv
+)
+
+add_library(${PROJECT_NAME} SHARED ${SOURCE_FILES})
+target_link_libraries(${PROJECT_NAME} ${hilog-lib} ${libace-lib} ${libnapi-lib} ${libuv-lib})
+if(LINK_CRONET)
+  #target_link_directories(${PROJECT_NAME} "${CMAKE_CURRENT_SOURCE_DIR}/third_party/cronet/lib")
+  target_link_libraries(${PROJECT_NAME} "${CMAKE_CURRENT_SOURCE_DIR}/third_party/cronet/lib/libbilicr.so")
 endif()
