@@ -28,7 +28,7 @@ napi_value CronetEngine::Register(napi_env env, napi_value exports) {
   napi_status status;
   napi_property_descriptor properties[] = {
     { "versionString", 0, 0, GetVersionString, 0, 0, napi_enumerable, 0 },
-
+    DECLARE_NAPI_METHOD("getPtr", GetPtr),
     DECLARE_NAPI_METHOD("startWithParams", StartWithParams),
     DECLARE_NAPI_METHOD("startNetLogToFile", StartNetLogToFile),
     DECLARE_NAPI_METHOD("stopNetLog", StopNetLog),
@@ -112,6 +112,20 @@ napi_value CronetEngine::GetVersionString(napi_env env, napi_callback_info info)
 
   napi_value result;
   DCHECK(napi_create_string_utf8(env, _Cronet_Engine_GetVersionString(obj->ptr_), NAPI_AUTO_LENGTH, &result));
+  return result;
+}
+
+napi_value CronetEngine::GetPtr(napi_env env, napi_callback_info info) {
+  napi_status status;
+
+  napi_value jsthis;
+  DCHECK(napi_get_cb_info(env, info, nullptr, nullptr, &jsthis, nullptr));
+
+  CronetEngine* obj;
+  DCHECK(napi_unwrap(env, jsthis, reinterpret_cast<void**>(&obj)));
+
+  napi_value result;
+  DCHECK(napi_create_bigint_int64(env, static_cast<int64_t>(reinterpret_cast<uintptr_t>(obj->ptr)), &result));
   return result;
 }
 
