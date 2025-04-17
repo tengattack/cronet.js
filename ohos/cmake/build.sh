@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-NDK_PATH=D:/Emuator/v5.0.5/sdk/12/native
+NDK_PATH=~/Library/OpenHarmony/sdk/5.0.5/native
 CMAKE=$NDK_PATH/build-tools/cmake/bin/cmake
 STRIP=$NDK_PATH/llvm/bin/llvm-strip
 
