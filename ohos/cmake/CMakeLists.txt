@@ -77,7 +77,7 @@ find_library(
 add_library(${PROJECT_NAME} SHARED ${SOURCE_FILES})
 
 if(LINK_CRONET)
-  list(APPEND EXTRA_LIBS ${LOCAL_PATH}/third_party/cronet/lib/ohos/libbilicr.so)
+  list(APPEND EXTRA_LIBS "${LOCAL_PATH}/third_party/cronet/lib/ohos/libbilicr.so")
 endif()
 
 target_link_libraries(

@@ -32,55 +32,44 @@ if(CMAKE_BUILD_TYPE STREQUAL "Debug")
   set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -fno-omit-frame-pointer -fsanitize=address")
 
   add_definitions(-D_DEBUG)
+  list(APPEND EXTRA_LIBS clang_rt.asan)
 endif()
 
-if(LINK_CRONET)
+if(CMAKE_BUILD_TYPE STREQUAL "Debug")
   add_definitions(-DLINK_CRONET)
 endif()
 
-include_directories(${CMAKE_JS_INC} "${CMAKE_CURRENT_SOURCE_DIR}/third_party/cronet/include")
+set(LOCAL_PATH ${CMAKE_SOURCE_DIR}/../..)
+set(SRC_PATH ${LOCAL_PATH}/src)
+
+include_directories(${CMAKE_JS_INC} "${LOCAL_PATH}/third_party/cronet/include")
 
 if(WIN32)
   set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 endif()
 
-file(GLOB SOURCE_FILES "src/*.cc")
+file(GLOB SOURCE_FILES "${SRC_PATH}/*.cc")
 
-find_library(
-    # Sets the name of the path variable.
-    hilog-lib
-    # Specifies the name of the NDK library that
-    # you want CMake to locate.
-    hilog_ndk.z
-)
+add_library(${PROJECT_NAME} SHARED ${SOURCE_FILES} ${CMAKE_JS_SRC})
+set_target_properties(${PROJECT_NAME} PROPERTIES CXX_STANDARD 17)
+set_target_properties(${PROJECT_NAME} PROPERTIES PREFIX "" SUFFIX ".node")
 
-find_library(
-    # Sets the name of the path variable.
-    libace-lib
-    # Specifies the name of the NDK library that
-    # you want CMake to locate.
-    ace_ndk.z
-)
-
-find_library(
-    # Sets the name of the path variable.
-    libnapi-lib
-    # Specifies the name of the NDK library that
-    # you want CMake to locate.
-    ace_napi.z
-)
-
-find_library(
-    # Sets the name of the path variable.
-    libuv-lib
-    # Specifies the name of the NDK library that
-    # you want CMake to locate.
-    uv
-)
-
-add_library(${PROJECT_NAME} SHARED ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} ${hilog-lib} ${libace-lib} ${libnapi-lib} ${libuv-lib})
 if(LINK_CRONET)
-  #target_link_directories(${PROJECT_NAME} "${CMAKE_CURRENT_SOURCE_DIR}/third_party/cronet/lib")
-  target_link_libraries(${PROJECT_NAME} "${CMAKE_CURRENT_SOURCE_DIR}/third_party/cronet/lib/libbilicr.so")
+  list(APPEND EXTRA_LIBS "${LOCAL_PATH}/third_party/cronet/lib/win32/bilicr.113.0.5672.177.dll.lib")
+endif()
+
+target_link_libraries(
+  ${PROJECT_NAME}
+
+  ${hilog-lib}
+  ${libace-lib}
+  ${libnapi-lib}
+
+  ${CMAKE_JS_LIB}
+  ${EXTRA_LIBS}
+)
+
+if(MSVC AND CMAKE_JS_NODELIB_DEF AND CMAKE_JS_NODELIB_TARGET)
+  # Generate node.lib
+  execute_process(COMMAND ${CMAKE_AR} /def:${CMAKE_JS_NODELIB_DEF} /out:${CMAKE_JS_NODELIB_TARGET} ${CMAKE_STATIC_LINKER_FLAGS})
 endif()
