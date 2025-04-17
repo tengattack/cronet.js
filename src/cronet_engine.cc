@@ -125,7 +125,7 @@ napi_value CronetEngine::GetPtr(napi_env env, napi_callback_info info) {
   DCHECK(napi_unwrap(env, jsthis, reinterpret_cast<void**>(&obj)));
 
   napi_value result;
-  DCHECK(napi_create_bigint_int64(env, static_cast<int64_t>(reinterpret_cast<uintptr_t>(obj->ptr)), &result));
+  DCHECK(napi_create_bigint_int64(env, static_cast<int64_t>(reinterpret_cast<uintptr_t>(obj->ptr_)), &result));
   return result;
 }
 
