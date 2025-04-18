@@ -17,6 +17,7 @@ class CronetEngine : public NapiClass {
   ~CronetEngine();
 
   static napi_value GetVersionString(napi_env env, napi_callback_info info);
+  static napi_value GetPtr(napi_env env, napi_callback_info info);
   static napi_value StartWithParams(napi_env env, napi_callback_info info);
   static napi_value StartNetLogToFile(napi_env env, napi_callback_info info);
   static napi_value StopNetLog(napi_env env, napi_callback_info info);

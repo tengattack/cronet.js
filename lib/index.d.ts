@@ -22,6 +22,7 @@ export class CronetEngineParams {
 export class CronetEngine {
   static loadLibrary: (filename: string) => void
   versionString: string
+  getPtr: () => bigint
   startWithParams: (params: CronetEngineParams) => void
   startNetLogToFile: (filename: string, logAll: boolean) => boolean
   stopNetLog: () => void
