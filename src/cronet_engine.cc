@@ -120,7 +120,9 @@ napi_value CronetEngine::GetPtr(napi_env env, napi_callback_info info) {
   napi_status status;
 
   napi_value jsthis;
-  DCHECK(napi_get_cb_info(env, info, nullptr, nullptr, &jsthis, nullptr));
+  if (!CronetUtil::ValidateAndGetCbInfo(env, info, &jsthis)) {
+    return nullptr;
+  }
 
   CronetEngine* obj;
   DCHECK(napi_unwrap(env, jsthis, reinterpret_cast<void**>(&obj)));
