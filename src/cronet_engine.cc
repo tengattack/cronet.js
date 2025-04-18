@@ -28,6 +28,7 @@ napi_value CronetEngine::Register(napi_env env, napi_value exports) {
   napi_status status;
   napi_property_descriptor properties[] = {
     { "versionString", 0, 0, GetVersionString, 0, 0, napi_enumerable, 0 },
+
     DECLARE_NAPI_METHOD("getPtr", GetPtr),
     DECLARE_NAPI_METHOD("startWithParams", StartWithParams),
     DECLARE_NAPI_METHOD("startNetLogToFile", StartNetLogToFile),
