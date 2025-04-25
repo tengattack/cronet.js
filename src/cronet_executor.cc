@@ -16,7 +16,7 @@ CronetExecutor::CronetExecutor()
     : ptr_(_Cronet_Executor_CreateWith(CronetExecutor::Execute))
     , started_(false)
     , stop_thread_loop_(false)
-    , work_(nullptr)
+    , native_thread_(nullptr)
     , tsfn_(nullptr) {
   _Cronet_Executor_SetClientContext(ptr_, this);
 }
@@ -133,19 +133,11 @@ napi_value CronetExecutor::Start(napi_env env, napi_callback_info info) {
                                          CronetExecutor::CallJs,
                                          &(obj->tsfn_)));
 
-  // Create an async work item, passing in the addon data, which will give the
-  // worker thread access to the above-created thread-safe function.
-  DCHECK(napi_create_async_work(env,
-                                NULL,
-                                work_name,
-                                CronetExecutor::ExecuteWork,
-                                CronetExecutor::WorkComplete,
-                                obj,
-                                &(obj->work_)));
+  native_thread_ = std::thread([obj] {
+    obj->RunTasksInQueue();
+    obj->WorkComplete();
+  });
 
-  // Queue the work item for execution.
-  DCHECK(napi_queue_async_work(env, obj->work_));
-  obj->AddRef();
   obj->started_ = true;
   return nullptr;
 }
@@ -167,6 +159,7 @@ napi_value CronetExecutor::Shutdown(napi_env env, napi_callback_info info) {
   }
 
   obj->Shutdown();
+  obj->native_thread_->join();
   return nullptr;
 }
 
@@ -201,40 +194,17 @@ void CronetExecutor::CallJs(napi_env env, napi_value js_cb, void* context, void*
   ctx->cv_.notify_one();
 }
 
-// This function runs on a worker thread. It has no access to the JavaScript
-// environment except through the thread-safe function.
-void CronetExecutor::ExecuteWork(napi_env env, void* data) {
-  CronetExecutor* executor = (CronetExecutor*)data;
-  napi_status status;
-
-  // We bracket the use of the thread-safe function by this thread by a call to
-  // napi_acquire_threadsafe_function() here, and by a call to
-  // napi_release_threadsafe_function() immediately prior to thread exit.
-  DCHECK(napi_acquire_threadsafe_function(executor->tsfn_));
-
-  executor->RunTasksInQueue();
-
-  // Indicate that this thread will make no further use of the thread-safe function.
-  DCHECK(napi_release_threadsafe_function(executor->tsfn_,
-                                          napi_tsfn_release));
-}
-
-// This function runs on the main thread after `ExecuteWork` exits.
-void CronetExecutor::WorkComplete(napi_env env, napi_status /* status */, void* data) {
-  CronetExecutor* executor = (CronetExecutor*)data;
+// This function runs on the main thread
+void CronetExecutor::WorkComplete() {
   napi_status status;
 
   // Clean up the thread-safe function and the work item associated with this
   // run.
-  DCHECK(napi_release_threadsafe_function(executor->tsfn_,
-                                          napi_tsfn_release));
-  DCHECK(napi_delete_async_work(env, executor->work_));
+  DCHECK(napi_release_threadsafe_function(tsfn_, napi_tsfn_release));
 
   // Set both values to NULL so JavaScript can order a new run of the thread.
-  executor->work_ = nullptr;
-  executor->tsfn_ = nullptr;
-  executor->ReleaseRef();
-  executor->started_ = false;
+  tsfn_ = nullptr;
+  started_ = false;
 }
 
 void CronetExecutor::RunTasksInQueue() {
@@ -293,7 +263,6 @@ void CronetExecutor::Shutdown() {
     stop_thread_loop_ = true;
   }
   task_available_.notify_one();
-  // TODO: Wait for async work.
 }
 
 /* static */

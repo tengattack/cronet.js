@@ -29,11 +29,12 @@ class CronetExecutor : public NapiClass {
 
   // async work
   static void CallJs(napi_env env, napi_value js_cb, void* context, void* data);
-  static void ExecuteWork(napi_env env, void* data);
-  static void WorkComplete(napi_env env, napi_status status, void* data);
 
-  napi_async_work work_;
+  void WorkComplete();
+
   napi_threadsafe_function tsfn_;
+
+  std::thread* native_thread_;
 
   Cronet_ExecutorPtr ptr_;
   bool started_;
