@@ -31,6 +31,7 @@ class CronetExecutor : public NapiClass {
   // async work
   static void CallJs(napi_env env, napi_value js_cb, void* context, void* data);
 
+  void ExecuteWork();
   void WorkComplete();
 
   napi_threadsafe_function tsfn_;

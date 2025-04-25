@@ -133,7 +133,7 @@ napi_value CronetExecutor::Start(napi_env env, napi_callback_info info) {
                                          &(obj->tsfn_)));
 
   obj->native_thread_ = std::thread([obj] {
-    obj->RunTasksInQueue();
+    obj->ExecuteWork();
   });
 
   obj->AddRef();
@@ -192,6 +192,22 @@ void CronetExecutor::CallJs(napi_env env, napi_value js_cb, void* context, void*
     ctx->called_ = true;
   }
   ctx->cv_.notify_one();
+}
+
+// This function runs on a worker thread. It has no access to the JavaScript
+// environment except through the thread-safe function.
+void CronetExecutor::ExecuteWork() {
+  napi_status status;
+
+  // We bracket the use of the thread-safe function by this thread by a call to
+  // napi_acquire_threadsafe_function() here, and by a call to
+  // napi_release_threadsafe_function() immediately prior to thread exit.
+  DCHECK(napi_acquire_threadsafe_function(tsfn_));
+
+  RunTasksInQueue();
+
+  // Indicate that this thread will make no further use of the thread-safe function.
+  DCHECK(napi_release_threadsafe_function(tsfn_, napi_tsfn_release));
 }
 
 // This function runs on the main thread
