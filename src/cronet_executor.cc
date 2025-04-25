@@ -275,9 +275,6 @@ void CronetExecutor::Shutdown() {
   // Break tasks loop.
   {
     std::lock_guard<std::mutex> lock(lock_);
-    if (!started_) {
-      return;
-    }
     stop_thread_loop_ = true;
   }
   task_available_.notify_one();
