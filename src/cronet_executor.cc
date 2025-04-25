@@ -16,7 +16,6 @@ CronetExecutor::CronetExecutor()
     : ptr_(_Cronet_Executor_CreateWith(CronetExecutor::Execute))
     , started_(false)
     , stop_thread_loop_(false)
-    , native_thread_(nullptr)
     , tsfn_(nullptr) {
   _Cronet_Executor_SetClientContext(ptr_, this);
 }
@@ -159,7 +158,7 @@ napi_value CronetExecutor::Shutdown(napi_env env, napi_callback_info info) {
   }
 
   obj->Shutdown();
-  obj->native_thread_->join();
+  obj->native_thread_.join();
   return nullptr;
 }
 

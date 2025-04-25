@@ -5,6 +5,7 @@
 #include <functional>
 #include <mutex>
 #include <queue>
+#include <thread>
 
 #include <cronet_c.h>
 #include <js_native_api_types.h>
@@ -34,7 +35,7 @@ class CronetExecutor : public NapiClass {
 
   napi_threadsafe_function tsfn_;
 
-  std::thread* native_thread_;
+  std::thread native_thread_;
 
   Cronet_ExecutorPtr ptr_;
   bool started_;
