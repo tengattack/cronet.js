@@ -134,7 +134,6 @@ napi_value CronetExecutor::Start(napi_env env, napi_callback_info info) {
 
   obj->native_thread_ = std::thread([obj] {
     obj->RunTasksInQueue();
-    obj->WorkComplete();
   });
 
   obj->started_ = true;
@@ -158,6 +157,7 @@ napi_value CronetExecutor::Shutdown(napi_env env, napi_callback_info info) {
   }
 
   obj->Shutdown();
+  obj->WorkComplete();
   obj->native_thread_.join();
   return nullptr;
 }
