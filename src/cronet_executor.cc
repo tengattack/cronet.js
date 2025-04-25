@@ -136,6 +136,7 @@ napi_value CronetExecutor::Start(napi_env env, napi_callback_info info) {
     obj->RunTasksInQueue();
   });
 
+  obj->AddRef();
   obj->started_ = true;
   return nullptr;
 }
@@ -203,6 +204,7 @@ void CronetExecutor::WorkComplete() {
 
   // Set both values to NULL so JavaScript can order a new run of the thread.
   tsfn_ = nullptr;
+  ReleaseRef();
   started_ = false;
 }
 
