@@ -158,8 +158,8 @@ napi_value CronetExecutor::Shutdown(napi_env env, napi_callback_info info) {
   }
 
   obj->Shutdown();
-  obj->WorkComplete();
   obj->native_thread_.join();
+  obj->WorkComplete();
   return nullptr;
 }
 
