@@ -158,8 +158,6 @@ napi_value CronetExecutor::Shutdown(napi_env env, napi_callback_info info) {
   }
 
   obj->Shutdown();
-  obj->native_thread_.join();
-  obj->WorkComplete();
   return nullptr;
 }
 
@@ -277,9 +275,15 @@ void CronetExecutor::Shutdown() {
   // Break tasks loop.
   {
     std::lock_guard<std::mutex> lock(lock_);
+    if (!started_) {
+      return;
+    }
     stop_thread_loop_ = true;
   }
   task_available_.notify_one();
+
+  native_thread_.join();
+  WorkComplete();
 }
 
 /* static */
