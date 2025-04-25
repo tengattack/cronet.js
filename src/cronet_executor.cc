@@ -132,7 +132,7 @@ napi_value CronetExecutor::Start(napi_env env, napi_callback_info info) {
                                          CronetExecutor::CallJs,
                                          &(obj->tsfn_)));
 
-  native_thread_ = std::thread([obj] {
+  obj->native_thread_ = std::thread([obj] {
     obj->RunTasksInQueue();
     obj->WorkComplete();
   });
