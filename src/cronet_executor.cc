@@ -172,10 +172,11 @@ void CronetExecutor::CallInJs(std::function<void(napi_env)> cb) {
   DCHECK(napi_call_threadsafe_function(tsfn_,
                                        ctx,
                                        napi_tsfn_blocking));
-
-  std::unique_lock<std::mutex> lock(ctx->lock_);
-  while (!ctx->called_)
-    ctx->cv_.wait(lock);
+  {
+    std::unique_lock<std::mutex> lock(ctx->lock_);
+    while (!ctx->called_)
+      ctx->cv_.wait(lock);
+  }
   delete ctx;
 }
 
