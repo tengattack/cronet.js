@@ -26,6 +26,10 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fvisibility=hidden -fvisibility-inlines
 
 add_definitions(-DNAPI_VERSION=8)
 
+if(LINK_CRONET)
+  add_definitions(-DLINK_CRONET)
+endif()
+
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
   set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fno-omit-frame-pointer -fsanitize=address")
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-omit-frame-pointer -fsanitize=address")
