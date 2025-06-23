@@ -131,8 +131,6 @@ DECLARE_CLAZZ_FUNC_GETTER_SETTER(UploadDataProvider, rewind)
 DECLARE_CLAZZ_FUNC_GETTER_SETTER(UploadDataProvider, close)
 
 int64_t CronetUploadDataProvider::GetLength(napi_env env) {
-  TRACE("GetLength called.\n");
-
   if (get_length_ref_) {
     napi_status status;
     napi_value cb;
@@ -165,8 +163,6 @@ int64_t CronetUploadDataProvider::GetLength(napi_env env) {
 void CronetUploadDataProvider::Read(napi_env env,
     Cronet_UploadDataSinkPtr upload_data_sink,
     Cronet_BufferPtr buffer) {
-  TRACE("Read called.\n");
-
   if (read_ref_) {
     napi_status status;
     napi_value cb;
@@ -184,8 +180,6 @@ void CronetUploadDataProvider::Read(napi_env env,
 
 void CronetUploadDataProvider::Rewind(napi_env env,
     Cronet_UploadDataSinkPtr upload_data_sink) {
-  TRACE("Rewind called.\n");
-
   if (rewind_ref_) {
     napi_status status;
     napi_value cb;
@@ -201,8 +195,6 @@ void CronetUploadDataProvider::Rewind(napi_env env,
 }
 
 void CronetUploadDataProvider::Close(napi_env env) {
-  TRACE("Close called.\n");
-
   if (close_ref_) {
     napi_status status;
     napi_value cb;
@@ -223,6 +215,7 @@ CronetUploadDataProvider* CronetUploadDataProvider::GetThis(
 
 /* sync */
 int64_t CronetUploadDataProvider::GetLength(Cronet_UploadDataProviderPtr self) {
+  TRACE("GetLength called.\n");
   auto* that = GetThis(self);
   // This call happened in `CronetUrlRequest.initWithParams(...)`, which in the
   // js main thread, so we call the js function directly.
@@ -234,6 +227,7 @@ int64_t CronetUploadDataProvider::GetLength(Cronet_UploadDataProviderPtr self) {
 void CronetUploadDataProvider::Read(Cronet_UploadDataProviderPtr self,
                                     Cronet_UploadDataSinkPtr upload_data_sink,
                                     Cronet_BufferPtr buffer) {
+  TRACE("Read called.\n");
   auto* that = GetThis(self);
   that->executor_->CallInJs([&](napi_env env) {
     that->Read(env, upload_data_sink, buffer);
@@ -242,6 +236,7 @@ void CronetUploadDataProvider::Read(Cronet_UploadDataProviderPtr self,
 
 void CronetUploadDataProvider::Rewind(Cronet_UploadDataProviderPtr self,
                                       Cronet_UploadDataSinkPtr upload_data_sink) {
+  TRACE("Rewind called.\n");
   auto* that = GetThis(self);
   that->executor_->CallInJs([&](napi_env env) {
     that->Rewind(env, upload_data_sink);
@@ -249,6 +244,7 @@ void CronetUploadDataProvider::Rewind(Cronet_UploadDataProviderPtr self,
 }
 
 void CronetUploadDataProvider::Close(Cronet_UploadDataProviderPtr self) {
+  TRACE("Close called.\n");
   auto* that = GetThis(self);
   that->executor_->CallInJs([&](napi_env env) {
     that->Close(env);
