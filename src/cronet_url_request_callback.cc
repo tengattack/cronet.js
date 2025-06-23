@@ -180,9 +180,9 @@ void CronetUrlRequestCallback::OnResponseStarted(
     Cronet_UrlRequestPtr request,
     Cronet_UrlResponseInfoPtr info) {
   TRACE("HTTP %s Status %d %s\n",
-      _Cronet_UrlResponseInfo_negotiated_protocol_get(info),
-      _Cronet_UrlResponseInfo_http_status_code_get(info),
-      _Cronet_UrlResponseInfo_http_status_text_get(info));
+        _Cronet_UrlResponseInfo_negotiated_protocol_get(info),
+        _Cronet_UrlResponseInfo_http_status_code_get(info),
+        _Cronet_UrlResponseInfo_http_status_text_get(info));
 
   if (on_response_started_ref_) {
     napi_status status;
@@ -213,7 +213,7 @@ void CronetUrlRequestCallback::OnReadCompleted(napi_env env,
                                                Cronet_BufferPtr buffer,
                                                uint64_t bytes_read) {
   // std::string last_read_data(
-  //     reinterpret_cast<char*>(_Cronet_Buffer_GetData(buffer)), bytesRead);
+  //     reinterpret_cast<char*>(_Cronet_Buffer_GetData(buffer)), bytes_read);
   // response_as_string_ += last_read_data;
 
   if (on_read_completed_ref_) {
