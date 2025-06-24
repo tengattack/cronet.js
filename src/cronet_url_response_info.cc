@@ -63,7 +63,7 @@ napi_value CronetUrlResponseInfo::New(napi_env env, napi_callback_info info) {
     napi_value args[1];
     napi_value jsthis;
     NODE_API_CALL(env, napi_get_cb_info(env, info, &argc, args, &jsthis, nullptr));
-    if (argc >= 2) {
+    if (argc > 1) {
       CronetUtil::ThrowInvalidArgumentError(env);
       return nullptr;
     }
