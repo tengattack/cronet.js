@@ -57,6 +57,10 @@ napi_value CronetUploadDataSink::New(napi_env env, napi_callback_info info) {
     napi_value args[1];
     napi_value jsthis;
     NODE_API_CALL(env, napi_get_cb_info(env, info, &argc, args, &jsthis, nullptr));
+    if (argc > 1) {
+      CronetUtil::ThrowInvalidArgumentError(env);
+      return nullptr;
+    }
 
     Cronet_UploadDataSinkPtr ptr = nullptr;
     if (argc == 1) {
@@ -65,6 +69,9 @@ napi_value CronetUploadDataSink::New(napi_env env, napi_callback_info info) {
 
       if (valuetype == napi_external) {
         DCHECK(napi_get_value_external(env, args[0], (void**)&ptr));
+      } else {
+        CronetUtil::ThrowInvalidArgumentError(env);
+        return nullptr;
       }
     }
 
@@ -92,12 +99,13 @@ napi_value CronetUploadDataSink::New(napi_env env, napi_callback_info info) {
     size_t argc_ = 1;
     napi_value args[1];
     NODE_API_CALL(env, napi_get_cb_info(env, info, &argc_, args, nullptr, nullptr));
-
-    const size_t argc = 1;
-    napi_value argv[argc] = {args[0]};
+    if (argc_ != 0) {
+      CronetUtil::ThrowInvalidArgumentError(env);
+      return nullptr;
+    }
 
     napi_value instance;
-    NODE_API_CALL(env, napi_new_instance(env, Constructor(env), argc, argv, &instance));
+    NODE_API_CALL(env, napi_new_instance(env, Constructor(env), argc_, args, &instance));
 
     return instance;
   }
