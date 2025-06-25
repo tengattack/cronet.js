@@ -69,6 +69,9 @@ napi_value CronetUploadDataSink::New(napi_env env, napi_callback_info info) {
 
       if (valuetype == napi_external) {
         DCHECK(napi_get_value_external(env, args[0], (void**)&ptr));
+      } else {
+        CronetUtil::ThrowInvalidArgumentError(env);
+        return nullptr;
       }
     }
 
