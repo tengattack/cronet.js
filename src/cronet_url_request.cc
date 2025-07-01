@@ -63,7 +63,7 @@ napi_value CronetUrlRequest::Register(napi_env env, napi_value exports) {
   return exports;
 }
 
-void CronetUrlRequest::SetCallback(CronetUrlRequestCallback *callback) {
+void CronetUrlRequest::SetCallback(CronetUrlRequestCallback* callback) {
   if (callback_) {
     callback_->ReleaseRef();
   }
@@ -195,7 +195,7 @@ napi_value CronetUrlRequest::InitWithParams(napi_env env, napi_callback_info inf
     CronetUtil::ThrowInvalidArgumentError(env);
     return nullptr;
   }
-  CronetEngine *engine;
+  CronetEngine* engine;
   DCHECK(napi_unwrap(env, args[0], reinterpret_cast<void**>(&engine)));
 
   size_t url_str_length, copied;
@@ -211,7 +211,7 @@ napi_value CronetUrlRequest::InitWithParams(napi_env env, napi_callback_info inf
     CronetUtil::ThrowInvalidArgumentError(env);
     return nullptr;
   }
-  CronetUrlRequestParams *params;
+  CronetUrlRequestParams* params;
   DCHECK(napi_unwrap(env, args[2], reinterpret_cast<void**>(&params)));
 
   DCHECK(napi_get_reference_value(env, *CronetUrlRequestCallback::ref, &cons));
@@ -221,7 +221,7 @@ napi_value CronetUrlRequest::InitWithParams(napi_env env, napi_callback_info inf
     CronetUtil::ThrowInvalidArgumentError(env);
     return nullptr;
   }
-  CronetUrlRequestCallback *callback;
+  CronetUrlRequestCallback* callback;
   DCHECK(napi_unwrap(env, args[3], reinterpret_cast<void**>(&callback)));
 
   DCHECK(napi_get_reference_value(env, *CronetExecutor::ref, &cons));
@@ -231,7 +231,7 @@ napi_value CronetUrlRequest::InitWithParams(napi_env env, napi_callback_info inf
     CronetUtil::ThrowInvalidArgumentError(env);
     return nullptr;
   }
-  CronetExecutor *executor;
+  CronetExecutor* executor;
   DCHECK(napi_unwrap(env, args[4], reinterpret_cast<void**>(&executor)));
 
   if (params->upload_data_provider_) {
@@ -342,7 +342,7 @@ napi_value CronetUrlRequest::Read(napi_env env, napi_callback_info info) {
   CronetUrlRequest* obj;
   DCHECK(napi_unwrap(env, jsthis, reinterpret_cast<void**>(&obj)));
 
-  CronetBuffer *buffer;
+  CronetBuffer* buffer;
   DCHECK(napi_unwrap(env, value, reinterpret_cast<void**>(&buffer)));
 
   Cronet_RESULT result = _Cronet_UrlRequest_Read(obj->ptr_, buffer->ptr());

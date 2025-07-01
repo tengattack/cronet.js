@@ -154,7 +154,7 @@ napi_value CronetEngine::StartWithParams(napi_env env, napi_callback_info info) 
     return nullptr;
   }
 
-  CronetEngineParams *params;
+  CronetEngineParams* params;
   DCHECK(napi_unwrap(env, value, reinterpret_cast<void**>(&params)));
 
   Cronet_RESULT result = _Cronet_Engine_StartWithParams(obj->ptr_, params->ptr());

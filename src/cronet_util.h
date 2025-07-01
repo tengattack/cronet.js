@@ -424,7 +424,7 @@ class CronetUtil {
  public:
   static bool ValidateAndGetCbInfo(napi_env env, napi_callback_info info, napi_value* this_arg);
   static bool ValidateAndGetCbInfo(napi_env env, napi_callback_info info, napi_value* this_arg, napi_value* arg, napi_valuetype arg_type, napi_ref arg_cons_ref = nullptr);
-  static bool ValidateAndGetCbInfo(napi_env env, napi_callback_info info, napi_value* this_arg, size_t argc_expected, napi_value *argv, napi_valuetype *arg_types);
+  static bool ValidateAndGetCbInfo(napi_env env, napi_callback_info info, napi_value* this_arg, size_t argc_expected, napi_value* argv, napi_valuetype* arg_types);
 
   static void ThrowInvalidArgumentError(napi_env env);
   static void ThrowCronetResultError(napi_env env, Cronet_RESULT result);

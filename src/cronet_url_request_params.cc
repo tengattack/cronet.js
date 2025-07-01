@@ -191,7 +191,7 @@ napi_value CronetUrlRequestParams::set_upload_data_provider_executor(napi_env en
     CronetUtil::ThrowInvalidArgumentError(env);
     return nullptr;
   }
-  CronetExecutor *executor;
+  CronetExecutor* executor;
   DCHECK(napi_unwrap(env, args[0], reinterpret_cast<void**>(&executor)));
 
   if (obj->upload_data_provider_executor_ref_) {
@@ -256,7 +256,7 @@ napi_value CronetUrlRequestParams::set_upload_data_provider(napi_env env, napi_c
     CronetUtil::ThrowInvalidArgumentError(env);
     return nullptr;
   }
-  CronetUploadDataProvider *upload_data_provider;
+  CronetUploadDataProvider* upload_data_provider;
   DCHECK(napi_unwrap(env, args[0], reinterpret_cast<void**>(&upload_data_provider)));
 
   if (obj->upload_data_provider_ref_) {
