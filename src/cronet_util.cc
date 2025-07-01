@@ -50,7 +50,7 @@ bool CronetUtil::ValidateAndGetCbInfo(napi_env env, napi_callback_info info, nap
   return true;
 }
 
-bool CronetUtil::ValidateAndGetCbInfo(napi_env env, napi_callback_info info, napi_value* this_arg, size_t argc_expected, napi_value *argv, napi_valuetype *arg_types) {
+bool CronetUtil::ValidateAndGetCbInfo(napi_env env, napi_callback_info info, napi_value* this_arg, size_t argc_expected, napi_value* argv, napi_valuetype* arg_types) {
   napi_status status;
   size_t argc = argc_expected;
   napi_value args[argc];

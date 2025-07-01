@@ -22,7 +22,7 @@ napi_value CronetHeaders<CronetUrlRequestParams>::add(napi_env env, napi_callbac
   CronetUrlRequestParams* obj;
   DCHECK(napi_unwrap(env, jsthis, reinterpret_cast<void**>(&obj)));
 
-  CronetHttpHeader *http_header;
+  CronetHttpHeader* http_header;
   DCHECK(napi_unwrap(env, value, reinterpret_cast<void**>(&http_header)));
 
   _Cronet_UrlRequestParams_request_headers_add(obj->ptr(), http_header->ptr());
@@ -96,7 +96,7 @@ napi_value CronetHeaders<CronetUrlResponseInfo>::add(napi_env env, napi_callback
   CronetUrlResponseInfo* obj;
   DCHECK(napi_unwrap(env, jsthis, reinterpret_cast<void**>(&obj)));
 
-  CronetHttpHeader *http_header;
+  CronetHttpHeader* http_header;
   DCHECK(napi_unwrap(env, value, reinterpret_cast<void**>(&http_header)));
 
   _Cronet_UrlResponseInfo_all_headers_list_add(obj->ptr(), http_header->ptr());
